@@ -81,7 +81,6 @@ project and can run the basic system.  (Congratulations!)
 
 
 ### Docker Compose
---------------
 
 Here we comment on new (to you) technology used in this checkpoint,
 [Docker Compose](https://docs.docker.com/compose/overview/).
