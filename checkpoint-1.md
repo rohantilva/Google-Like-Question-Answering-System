@@ -9,7 +9,7 @@ provided from the assignments, as well as any solutions from members
 of your team.
 
 Your goal is to build a new search service in its own container,
-similarly to HQ1, and to modify your docker-compose file from the
+similarly to HW1, and to modify your docker-compose file from the
 first checkpoint to integrate your container into the system.  The UI
 in checkpoint 0 connects to the Lucene search service.  You need to
 change this so the UI connects to your search service, your search
