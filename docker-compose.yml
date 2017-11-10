@@ -4,7 +4,7 @@
 #   - a SearchService on port 9091
 
 
-version: "2"
+version: "2.0"
 
 volumes:
   index_volume:
@@ -13,20 +13,20 @@ services:
 
   # Servers
 
-  fetch:
-    image: hltcoe/concrete-python
-    command: fetch-server.py --loglevel debug /home/concrete/simple-search/files/data/WikiQA-train.tsv.gz
-    ports:
-      - "9090:9090"
-    volumes:
-      - .:/home/concrete/simple-search/files/
+#  fetch:
+#    image: hltcoe/concrete-python
+#    command: fetch-server.py --loglevel debug /home/concrete/simple-search/files/data/WikiQA-train.tsv.gz
+#    ports:
+#      - "9090:9090"
+#    volumes:
+#      - .:/home/concrete/simple-search/files/
 
 #   # If you want to use the WikiQA corpus, comment out the 'fetch' configuration
 #   # section above, and uncomment the four lines below:
-#   fetch:
-#     image: hltcoe/fetch-wikiqa-corpus
-#   ports:
-#     - "9090:9090"
+  fetch:
+    image: hltcoe/fetch-wikiqa-corpus
+    ports:
+      - "9090:9090"
 
   search:
     depends_on:
