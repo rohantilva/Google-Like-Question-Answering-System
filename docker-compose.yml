@@ -4,7 +4,7 @@
 #   - a SearchService on port 9091
 
 
-version: "3"
+version: "2"
 
 volumes:
   index_volume:
@@ -15,7 +15,7 @@ services:
 
   fetch:
     image: hltcoe/concrete-python
-    command: fetch-server.py --loglevel debug /home/concrete/simple-search/files/comms.zip
+    command: fetch-server.py --loglevel debug /home/concrete/simple-search/files/data/WikiQA-train.tsv.gz
     ports:
       - "9090:9090"
     volumes:
