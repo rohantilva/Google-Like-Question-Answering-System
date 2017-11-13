@@ -1,4 +1,4 @@
-## Checkpoint 1: Baseline search service
+# Checkpoint 1: Baseline search service
 
 Due November 16 at 3 pm.
 
