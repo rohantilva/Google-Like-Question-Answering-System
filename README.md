@@ -46,6 +46,16 @@ Additional data may be released in future checkpoints.
 * [Checkpoint 0: Running provided system](checkpoint-0.md)
 * [Checkpoint 1: Creating baseline search service](checkpoint-1.md)
 
+## Removing the index
+
+The
+[README from simple-search-demo](https://github.com/hltcoe/simple-search-demo/blob/master/README.md)
+contains instructions for removing Docker Compose and Docker state,
+such as removing containers that have been created and removing the
+index volume.  However, note your index volume will not be named
+`simplesearchdemo_index_volume`, as that README suggests.  Run `docker
+volume ls` to find the actual volume name.
+
 ## Docker Compose
 
 Here we comment on new (to you) technology used in this checkpoint,
