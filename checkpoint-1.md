@@ -44,3 +44,5 @@ that commit, stand up the system using the same commands listed in the
 original `simple-search-demo` README, enter the query into the UI, and
 get the same results (using an EC2 instance like yours, with just
 Docker and Docker Compose installed.)
+
+A PDF rendering of the Issue should be submitted to Gradescope.
