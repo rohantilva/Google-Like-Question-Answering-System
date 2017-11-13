@@ -33,12 +33,13 @@ team members, rather than by email.
 
 Data will be provided under `data/`, with the essential
 data set coming from WikiQA, the same set that you partially
-annotated in HW3.  Additional data may be released in future
-checkpoints.  You should train on train, tune based on dev, and
+annotated in HW3.  You should train on train, tune based on dev, and
 test on test.  Please refrain from using test until the end of the
 semester.  Make use of dev as your test set until time to write the
 final report.  Only when explicitly told through instructions that
 it is appropriate to run on test, should you run on test.
+
+Additional data may be released in future checkpoints.
 
 ## Checkpoints
 
