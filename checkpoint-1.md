@@ -1,6 +1,6 @@
 # Checkpoint 1: Baseline search service
 
-Due November 16 at 3 pm.
+Due November 17 at 3 pm.
 
 In HW1 you were provided with stub code for setting up a search
 service.  You should make use of that and your solutions to HW1 to
