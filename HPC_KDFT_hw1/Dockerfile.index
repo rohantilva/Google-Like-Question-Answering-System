@@ -1,0 +1,10 @@
+#FROM python:2
+FROM python:3
+
+RUN pip install concrete==4.13.3
+
+ADD index_tokens.py /opt/
+
+WORKDIR /opt
+
+CMD ["python", "index_tokens.py"]  #echo "This should be creating an index file at /mnt/index/test-data-index.gz and printing out the 50 most-frequent tokens"

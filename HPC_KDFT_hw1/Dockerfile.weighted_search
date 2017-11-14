@@ -1,0 +1,10 @@
+#FROM python:2
+FROM python:3
+
+RUN pip install concrete==4.13.3
+
+ADD weighted_search.py /opt/
+
+WORKDIR /opt
+
+ENTRYPOINT ["python", "weighted_search.py"]

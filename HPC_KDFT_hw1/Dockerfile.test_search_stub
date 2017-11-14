@@ -1,0 +1,8 @@
+#FROM python:2
+FROM python:3
+
+RUN pip install concrete==4.13.3 pytest==3.2.1
+
+ADD search_stub.py test_search_stub.py /opt/
+WORKDIR /opt
+ENTRYPOINT ["pytest"]

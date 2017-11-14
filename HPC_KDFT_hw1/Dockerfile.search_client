@@ -1,0 +1,7 @@
+FROM python:3
+
+RUN pip install concrete==4.13.3
+
+ADD search_client.py /opt/
+WORKDIR /opt
+ENTRYPOINT ["python", "search_client.py", "--host", "localhost", "--port", "9090"]
