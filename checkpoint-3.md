@@ -4,11 +4,13 @@ Due: November 28, 2017
 
 
 Train a classifier to predict whether a given sentence contains the
-answer to a given question.  This system will be used in your search
+answer to a given question.  For the final project this classifier will be integrated into your search
 module for reranking the sentences returned from Lucene based on your
-query, which should then improve your search evaluation score (as
-defined in checkpoint 2).  In this checkpoint we are not concerned
-with that improvement, but instead just wish to ensure you have
+query, which should leave to an improved search evaluation score (as
+defined in checkpoint 2).  
+
+In this checkpoint we are not concerned
+with that integration yet, but instead just wish to ensure you have
 trained a classifier on the original WikiQA data.  As one of the
 evaluations you need to report on in the final presentation and the
 writeup, you need to say how well your classifier does on this WikiQA
@@ -41,7 +43,7 @@ A non-binary feature that is between 0 and 1 might be:
 
 * The cosine similarity of the TF IDF vectors of the question and the answer candidate (measuring how many terms overlap, weighted by their IDF)
 
-There are months of features that could, and have, been defined.  You are encouraged to look through the question answering academic literature in the course of the final project to determine useful potential features.  For this checkpoint you need to at least implement cosine similarity of the question and the answer candidate as a feature.
+There are months of features that could be, and have been, defined.  You are encouraged to look through the question answering academic literature in the course of the final project to determine useful potential features.  For this checkpoint you need to at least implement cosine similarity of the question and the answer candidate as a feature.
 
 Submit an Issue .pdf with a reference to the salient commit, and with a small table of your results, which should be:
 
