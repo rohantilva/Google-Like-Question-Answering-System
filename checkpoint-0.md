@@ -1,4 +1,4 @@
-## Checkpoint 0: Running provided system
+# Checkpoint 0: Running provided system
 
 Due November 13 at 3 pm.
 
@@ -36,29 +36,3 @@ Take a screenshot of these search results and attach them to the
 Issue.  A PDF rendering of the Issue should be
 submitted to Gradescope as proof that you have started the final
 project and can run the basic system.  (Congratulations!)
-
-
-### Docker Compose
-
-Here we comment on new (to you) technology used in this checkpoint,
-[Docker Compose](https://docs.docker.com/compose/overview/).
-
-Docker Compose is one of the ways that Docker containers begin to be
-especially useful.  A compose file allows you to start mixing and
-matching components into larger workflows, on the assumption that the
-individual components are containerized and working.  (In homework 1
-we used a bash script, `run.bash`, to manage a network of Docker
-containers: Docker Compose is a more robust way of doing this.)  In
-this project, you have access to a UI, a fetch service, and a Lucene
-index all pre-baked and assembled into a workflow.  In this checkpoint
-you need to slightly modify the compose file to make use of the WikiQA
-fetch service.  In the future you will add another container, your own
-search service, as part of the larger workflow.
-
-You will not be using them in this course, but be aware there is
-experimental development within Docker for things called [stacks and
-bundles](https://docs.docker.com/compose/bundles/).  We mention them
-here only so you are aware that while currently there is Docker
-Compose, in the future some related but different technology will
-replace it.  However, the underlying concept of composing (or
-"stacking" or "bundling") containers remains the same.

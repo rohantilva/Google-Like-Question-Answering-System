@@ -33,14 +33,50 @@ team members, rather than by email.
 
 Data will be provided under `data/`, with the essential
 data set coming from WikiQA, the same set that you partially
-annotated in HW3.  Additional data may be released in future
-checkpoints.  You should train on train, tune based on dev, and
+annotated in HW3.  You should train on train, tune based on dev, and
 test on test.  Please refrain from using test until the end of the
 semester.  Make use of dev as your test set until time to write the
 final report.  Only when explicitly told through instructions that
 it is appropriate to run on test, should you run on test.
 
+Additional data may be released in future checkpoints.
+
 ## Checkpoints
 
 * [Checkpoint 0: Running provided system](checkpoint-0.md)
 * [Checkpoint 1: Creating baseline search service](checkpoint-1.md)
+
+## Removing the index
+
+The
+[README from simple-search-demo](https://github.com/hltcoe/simple-search-demo/blob/master/README.md)
+contains instructions for removing Docker Compose and Docker state,
+such as removing containers that have been created and removing the
+index volume.  However, note your index volume will not be named
+`simplesearchdemo_index_volume`, as that README suggests.  Run `docker
+volume ls` to find the actual volume name.
+
+## Docker Compose
+
+Here we comment on new (to you) technology used in this checkpoint,
+[Docker Compose](https://docs.docker.com/compose/overview/).
+
+Docker Compose is one of the ways that Docker containers begin to be
+especially useful.  A compose file allows you to start mixing and
+matching components into larger workflows, on the assumption that the
+individual components are containerized and working.  (In homework 1
+we used a bash script, `run.bash`, to manage a network of Docker
+containers: Docker Compose is a more robust way of doing this.)  In
+this project, you have access to a UI, a fetch service, and a Lucene
+index all pre-baked and assembled into a workflow.  In this checkpoint
+you need to slightly modify the compose file to make use of the WikiQA
+fetch service.  In the future you will add another container, your own
+search service, as part of the larger workflow.
+
+You will not be using them in this course, but be aware there is
+experimental development within Docker for things called [stacks and
+bundles](https://docs.docker.com/compose/bundles/).  We mention them
+here only so you are aware that while currently there is Docker
+Compose, in the future some related but different technology will
+replace it.  However, the underlying concept of composing (or
+"stacking" or "bundling") containers remains the same.
