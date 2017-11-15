@@ -34,7 +34,7 @@ those queries, which you will need to compute success @k.  (See the
 README under [data](data) for further description of these files.)
 
 You may wish to compare your results to Figure 3 of Chen and Van Durme
-(2017) for a comparable set of values for this task, which shows
+(2017), which shows
 success @k for all values of k from 1 to 1000.  However, note that Chen
 and Van Durme were concerned with all of Wikipedia, not just the subset
 provided in the WikiQA fetch service.
