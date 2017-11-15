@@ -1,4 +1,4 @@
-This contains the data from the (WikiQA effort)[https://aclweb.org/anthology/D15-1237], and the matching of WikiQA answer sentences to (Concretely Annotated Wikipedia (CAW))[https://archive.data.jhu.edu/dataset.xhtml?persistentId=doi:10.7281/T1/D06YVM].
+This contains the data from the [WikiQA effort](https://aclweb.org/anthology/D15-1237), and the matching of WikiQA answer sentences to [Concretely Annotated Wikipedia (CAW)](https://archive.data.jhu.edu/dataset.xhtml?persistentId=doi:10.7281/T1/D06YVM).
 
 WikiQA
 ------
@@ -7,7 +7,7 @@ WikiQA/WikiQA-{train|dev|test}.tsv(.gz) : the train, dev, test split
 
 WikiQA/LICENSE.pdf is the original license file from Microsoft for the WikiQA data, which is included here in accordance to that license.  At the time of this writing, the original WikiQA dataset in its entirety could be found at:
 
-(https://www.microsoft.com/en-us/download/details.aspx?id=52419)[https://www.microsoft.com/en-us/download/details.aspx?id=52419]
+https://www.microsoft.com/en-us/download/details.aspx?id=52419
 
 
 WikiQA-match
