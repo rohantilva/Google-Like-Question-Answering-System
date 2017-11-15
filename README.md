@@ -46,7 +46,7 @@ Additional data may be released in future checkpoints.
 * [Checkpoint 0: Running provided system](checkpoint-0.md)
 * [Checkpoint 1: Creating baseline search service](checkpoint-1.md)
 * [Checkpoint 2: Search evaluation](checkpoint-2.md)
-* [Checkpoint 3: Search evaluation](checkpoint-3.md)
+* [Checkpoint 3: Classifier baseline](checkpoint-3.md)
 
 ## Removing the index
 
