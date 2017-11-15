@@ -19,7 +19,7 @@ script that implements this metric.)  We will consider four different
 values of k: 1, 10, 100, and 1000.  For a given value of k, success @k
 is the fraction of queries in the evaluation set for which a correct
 answer to the query appears in the top k results for that query.  For
-example, for every query you managed to get a correct answer in the top
+example, if for every query you managed to get a correct answer in the top
 10 hits, success @10 would be 1.
 
 The success @k scores you submit for this checkpoint should be computed
