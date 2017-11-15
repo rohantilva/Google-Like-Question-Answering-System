@@ -58,9 +58,9 @@ on this line is to improve the classifier as best as you can.
 F1/P/R
 ========
 
-[F1/P/R](https://en.wikipedia.org/wiki/F1_score), such as (implemented
+[F1/P/R](https://en.wikipedia.org/wiki/F1_score), such as [implemented
 in
-scikit-learn)[http://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_fscore_support.html],
+scikit-learn](http://scikit-learn.org/stable/modules/generated/sklearn.metrics.precision_recall_fscore_support.html),
 is a standard set of metrics for information extraction.  In this case
 you have a binary classification problem: for each candidate sentence,
 you need to predict whether it does, or does not, answer the question.
