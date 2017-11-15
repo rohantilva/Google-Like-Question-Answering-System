@@ -42,10 +42,8 @@ services:
     depends_on:
       - search
     image: search-passthrough
-    command: python search_pass.py query
     ports:
-      - "9092:9090
-"
+      - "9093:9090"
   ui:
     image: hltcoe/simple-search-demo
     command: --host 0.0.0.0 --port 8080 --fetch-host fetch --fetch-port 9090 --search-host kdft --search-port 9090 --lru-cache-size 50
