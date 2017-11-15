@@ -9,8 +9,8 @@ results.
 
 ### Success @k
 
-Following [Chen and Van Durme,
-2017](http://www.aclweb.org/anthology/E/E17/E17-2114.pdf) (which you
+Following [Chen and Van Durme (
+2017)](http://www.aclweb.org/anthology/E/E17/E17-2114.pdf) (which you
 are encouraged to skim), we will evaluate a question answer retrieval
 system using the success @k metric.  We will consider four different
 values of k: 1, 10, 100, and 1000.  For a given value of k, success @k

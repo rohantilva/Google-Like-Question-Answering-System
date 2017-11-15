@@ -19,7 +19,8 @@ WikiQA-match/{train|dev|test}-match.tsv -- each corresponding to the specific po
 <WikiQA Sentence ID>    <CAW Article Title> <CAW Article Title:Section Number:Sentence Number>  <Sentence UUID> <Label>
 ```
 
-This data results from:
+This data results from [Chen and Van Durme (
+2017)](http://www.aclweb.org/anthology/E/E17/E17-2114.pdf):
 
 ```
 @InProceedings{chen-vandurme:2017:EACLshort,
