@@ -9,6 +9,14 @@ WikiQA/LICENSE.pdf is the original license file from Microsoft for the WikiQA da
 
 https://www.microsoft.com/en-us/download/details.aspx?id=52419
 
+The header on these files is as follows:
+
+```
+QuestionID	Question	DocumentID	DocumentTitle	SentenceID	Sentence	Label
+```
+
+Where Label is 0/1 binary as to whether a given sentence is deemed to be the answer to the given question.
+
 
 WikiQA-match
 ------------
@@ -18,6 +26,9 @@ WikiQA-match/{train|dev|test}-match.tsv -- each corresponding to the specific po
 ```
 <WikiQA Sentence ID>    <CAW Article Title> <CAW Article Title:Section Number:Sentence Number>  <Sentence UUID> <Label>
 ```
+
+Where label reflects whether the sentence does or does not answer the question, this follows from the Label column of the WikiQA data files.
+
 
 This data results from [Chen and Van Durme (
 2017)](http://www.aclweb.org/anthology/E/E17/E17-2114.pdf):
