@@ -10,8 +10,8 @@ results.
 Success @k
 ==========
 
-Following (Chen and Van Durme,
-2017)[http://www.aclweb.org/anthology/E/E17/E17-2114.pdf] which you
+Following [Chen and Van Durme,
+2017](http://www.aclweb.org/anthology/E/E17/E17-2114.pdf) which you
 are encouraged to skim, we will use success @k as one of the metrics.
 This value reports for a given value of k: do the results 1...k
 contain at least one positive result to the query?  We are concerned
@@ -20,7 +20,7 @@ evaluation script that will compute these values.  For a given query
 you know the title, section and sentence number, along with UUIDs, of
 the one or more correct answer, as provided in:
 
-  (data/WikiQA-match/)[data/WikiQA-match/]
+  [data/WikiQA-match/](data/WikiQA-match)
 
 Provided a ranked list of responses to that query (search results) you
 iterate through the list, looking for the first case of a correct
