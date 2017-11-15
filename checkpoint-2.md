@@ -12,18 +12,24 @@ results.
 Following [Chen and Van Durme (
 2017)](http://www.aclweb.org/anthology/E/E17/E17-2114.pdf) (which you
 are encouraged to skim), we will evaluate a question answer retrieval
-system using the success @k metric.  We will consider four different
+system using the success @k metric.  (You are responsible for writing a
+script that implements this metric.)  We will consider four different
 values of k: 1, 10, 100, and 1000.  For a given value of k, success @k
 is the fraction of queries in the evaluation set for which a correct
 answer to the query appears in the top k results for that query.  For
 example, for every query you managed to get a correct answer in the top
 10 hits, success @10 would be 1.
 
-You are responsible for writing an evaluation script that computes
-success @k.  For each query, the title, section and sentence number,
-and UUIDs of the correct answer(s) can be found in the provided data:
-
-[data/WikiQA-match/](data/WikiQA-match)
+The success @k scores you submit for this checkpoint should be computed
+using the baseline search system (with the pass-through module) you
+developed for the previous checkpoint.  You should run your evaluation
+script on the **dev set** to compute these scores.  The purpose here is
+to ensure you can query your system from the command line---using
+queries from [data/WikiQA](data/WikiQA)---and compute success @k.  The
+files under [data/WikiQA-match](data/WikiQA-match) provide an alignment
+from WikiQA queries to sentences in the communications that answer
+those queries, which you will need to compute success @k.  (See the
+README under [data](data) for further description of these files.)
 
 You may wish to compare your results to Figure 3 of Chen and Van Durme
 (2017) for a comparable set of values for this task, which shows
@@ -40,7 +46,6 @@ answers you can determine for yourself based on the data input file:
 they are simply the questions with no associated candidates that were
 labeled as correct.
 
-
 ### Baseline success @k
 
 Submit to gradescope a .pdf of the Issue for this checkpoint.  The last
@@ -55,14 +60,3 @@ Baseline success @k
 100: <value>
 1000: <value>
 ```
-
-These scores should be computed using the evaluation script you write
-for this checkpoint and the baseline search system (with the
-pass-through module) you developed for the previous checkpoint.
-You should run the evaluation script on the **dev set** to compute
-these scores.  The purpose here is to ensure you can query your system
-from the command line---using queries from data/---and compute success
-@k.  The files under data/WikiQA-match/ provide an alignment from
-WikiQA to sentences in the communications, which you will need to
-compute the results (which sentences from which communications answer
-the given query you are submitting).
