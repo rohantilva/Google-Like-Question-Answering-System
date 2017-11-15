@@ -35,8 +35,7 @@ You may wish to compare your results to Figure 3 of Chen and Van Durme
 (2017) for a comparable set of values for this task, which shows
 success @k for all values of k from 1 to 1000.  However, note that Chen
 and Van Durme were concerned with all of Wikipedia, not just the subset
-provided in the WikiQA fetch service; we should expect higher success
-@k in this restricted subset.  (Why?)
+provided in the WikiQA fetch service.
 
 Note that some questions in WikiQA do not have any correct answers.
 You should skip those cases when computing success @k, we are only
