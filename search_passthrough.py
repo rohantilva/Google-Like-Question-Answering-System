@@ -8,6 +8,7 @@ from concrete.search import SearchService
 from concrete.search.ttypes import SearchResult
 from concrete.services.ttypes import ServicesException
 from concrete.util import AnalyticUUIDGeneratorFactory, SearchServiceWrapper
+from concrete.util.search_wrapper import SearchClientWrapper
 
 
 class SearchHandler(SearchService.Iface):
@@ -26,13 +27,8 @@ class SearchHandler(SearchService.Iface):
     def search(self, query):
         augf = AnalyticUUIDGeneratorFactory()
         aug = augf.create()
-        return SearchResult(uuid=aug.next(),
-                            searchQuery=query,
-                            searchResultItems=[],
-                            metadata=AnnotationMetadata(
-                                tool="stub search",
-                                timestamp=int(time.time())),
-                            lang="eng")
+        with SearchClientWrapper("localhost", "9090") as sc:
+            return sc.search(query)
 
 
 if __name__ == "__main__":
