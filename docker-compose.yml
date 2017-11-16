@@ -40,10 +40,13 @@ services:
 
   kdft:
     depends_on:
+      - fetch
       - search
     image: search-passthrough
+    command: -p 9090 --host 0.0.0.0 --search_port 9090 --search_host search
     ports:
-      - "9093:9090"
+      - "9092:9090"
+
   ui:
     image: hltcoe/simple-search-demo
     command: --host 0.0.0.0 --port 8080 --fetch-host fetch --fetch-port 9090 --search-host kdft --search-port 9090 --lru-cache-size 50
