@@ -11,9 +11,11 @@ from concrete.util import AnalyticUUIDGeneratorFactory, SearchServiceWrapper, Se
 
 
 class SearchHandler(SearchService.Iface):
-    def __init__(self, other, corpus_name):
+    def __init__(self, other, corpus_name, host, port):
         self.other = other
         self.corpus_name = corpus_name
+        self.port = port
+        self.host = host
     def alive(self):
         return True
 
@@ -31,7 +33,7 @@ class SearchHandler(SearchService.Iface):
         # return self.other.search(query)
         # augf = AnalyticUUIDGeneratorFactory()
         # aug = augf.create()
-        with SearchClientWrapper("search", "9090") as sc:
+        with SearchClientWrapper(self.host, self.port) as sc:
             return sc.search(query)
 
 
@@ -48,10 +50,10 @@ if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)-15s %(levelname)s: %(message)s',
                         level='DEBUG')
     
-    # time.sleep(3000)
+    # time.sleep(10000)
     # with SearchClientWrapper("search", "9090") as search_client:
-    # handler = SearchHandler(search_client, "wikiQA")
-    handler = SearchHandler(None, "wikiQA")
+    # handler = SearchHandler(search_client, "wikiQA", "", "")
+    handler = SearchHandler(None, "wikiQA", args.search_host, args.search_port)
 
     server = SearchServiceWrapper(handler)
 
