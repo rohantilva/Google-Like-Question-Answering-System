@@ -1,6 +1,6 @@
 ## Checkpoint 3: Training and evaluating baseline classifier
 
-Due: November 29, 2017 at 3 pm.
+Due December 5 at 3 pm.
 
 Train a classifier to predict whether a given sentence contains the
 answer to a given question.  After this checkpoint you will integrate
