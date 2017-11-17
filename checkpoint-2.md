@@ -1,6 +1,6 @@
 ## Checkpoint 2: Search evaluation
 
-Due at November 29, 3pm.
+Due December 5 at 3pm.
 
 In this checkpoint you will implement and run the evaluation code for
 the search task you will demo in the final presentations.  In the
