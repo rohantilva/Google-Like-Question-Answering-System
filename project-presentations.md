@@ -28,3 +28,16 @@ are presenting.
 REMEMBER: at this stage you are still to be only computing results on
 the dev set, do not touch the test set until time for final
 presentations.
+
+You will get feedback from the instructors following the
+presentations.  This could include presentation feedback, as well as
+feedback on what you've proposed: do we think it is too hard, too
+easy, to crazy, etc.  This project contains suggestions on ideas you
+might want to pursue, but you can propose your own as well.  Come to
+the 5th/7th with ideas, and we'll tell you if they are in
+scope/on-track for enough effort for the final project.  We don't want
+to be heavy handed in suggestions before these presentations, so-to
+allow you to think and propose.  However we will end up suggesting
+specific ideas to pursue after the presentations if we feel your
+current proposals are not challenging enough given the size of your
+team and the time available.
