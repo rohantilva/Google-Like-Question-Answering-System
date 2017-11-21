@@ -59,6 +59,7 @@ Additional data may be released in future checkpoints.
 * [Answer triggering for improved ranking](answer-triggering.md)
 * [Extra negative training examples](extra-negative.md)
 * [Read](chapter-on-qa.md)
+* [Query Expansion](query-expansion.md)
 
 ## Removing the index
 
