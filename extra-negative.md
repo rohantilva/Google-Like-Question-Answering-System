@@ -1,8 +1,8 @@
 ## Extra Negative Data
 
-In the paper: (Automatically Extracting High-Quality Negative Examples
+In the paper: [Automatically Extracting High-Quality Negative Examples
 for Answer Selection in Question
-Answering)[https://dl.acm.org/citation.cfm?id=3080645&CFID=1008380102&CFTOKEN=30185839],
+Answering](https://dl.acm.org/citation.cfm?id=3080645&CFID=1008380102&CFTOKEN=30185839),
 the authors propose a simple strategy for extracting extra negative
 examples for training a question answer selection system.  Relevant
 here: they provide their data which should supplement the TREC data
