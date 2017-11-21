@@ -48,6 +48,11 @@ Additional data may be released in future checkpoints.
 * [Checkpoint 2: Search evaluation](checkpoint-2.md)
 * [Checkpoint 3: Classifier baseline](checkpoint-3.md)
 
+## Next Steps
+
+* [Initial Presentations](project-presentations.md)
+
+
 ## Removing the index
 
 The
