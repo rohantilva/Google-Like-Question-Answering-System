@@ -37,7 +37,7 @@ looks at the returned elements, and makes that binary classification
 decision "this set does/does not have any correct answers in it".
 
 The numbers to report here are [Precision, Recall and
-F1]](https://machinelearningmastery.com/classification-accuracy-is-not-enough-more-performance-measures-you-can-use/),
+F1](https://machinelearningmastery.com/classification-accuracy-is-not-enough-more-performance-measures-you-can-use/),
 at each value of 1, 10, 100, and 1000.  For example, if you have N
 queries, leading to N rank lists, then for each list of the first 10
 you will ask: "does this have a right answer?", you will know whether
