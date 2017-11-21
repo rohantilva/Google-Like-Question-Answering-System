@@ -1,7 +1,7 @@
 ## TREC QA
 
-(TREC QA
-data)[http://cs.jhu.edu/~xuchen/packages/jacana-qa-naacl2013-data-results.tar.bz2]
+[TREC QA
+data](http://cs.jhu.edu/~xuchen/packages/jacana-qa-naacl2013-data-results.tar.bz2)
 : This contains questions, answer sentences, and in every positive
 answer sentence, the last two lines gives the answer string and the
 token indices to the correct answer.
