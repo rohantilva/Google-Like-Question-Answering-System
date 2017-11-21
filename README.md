@@ -51,7 +51,7 @@ Additional data may be released in future checkpoints.
 ## Next Steps
 
 * [Initial Presentations](project-presentations.md)
-
+* [Final Presentations and writeup](final-demos.md)
 
 ## Removing the index
 
