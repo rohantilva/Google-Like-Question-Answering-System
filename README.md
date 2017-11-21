@@ -53,6 +53,13 @@ Additional data may be released in future checkpoints.
 * [Initial Presentations](project-presentations.md)
 * [Final Presentations and writeup](final-demos.md)
 
+## Ideas for final project
+
+* [Extra QA data](trec-data.md)
+* [Answer triggering for improved ranking](answer-triggering.md)
+* [Extra negative training examples](extra-negative.md)
+* [Read](chapter-on-qa.md)
+
 ## Removing the index
 
 The
