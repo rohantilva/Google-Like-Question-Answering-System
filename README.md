@@ -139,6 +139,21 @@ Additional data may be released in future checkpoints.
 
 * [Checkpoint 0: Running provided system](checkpoint-0.md)
 * [Checkpoint 1: Creating baseline search service](checkpoint-1.md)
+* [Checkpoint 2: Search evaluation](checkpoint-2.md)
+* [Checkpoint 3: Classifier baseline](checkpoint-3.md)
+
+## Next Steps
+
+* [Initial Presentations](project-presentations.md)
+* [Final Presentations and writeup](final-demos.md)
+
+## Ideas for final project
+
+* [Extra QA data](trec-data.md)
+* [Answer triggering for improved ranking](answer-triggering.md)
+* [Extra negative training examples](extra-negative.md)
+* [Read](chapter-on-qa.md)
+* [Query Expansion](query-expansion.md)
 
 ## Removing the index
 
