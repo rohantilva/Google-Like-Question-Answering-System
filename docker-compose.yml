@@ -47,6 +47,15 @@ services:
     ports:
       - "9092:9090"
 
+  kscore:
+    depends_on:
+      - fetch
+      - kdft
+    image: kscore
+    command: -p 9090 --host 0.0.0.0 --search-port 9090 --search-host kdft --fetch-host fetch --fetch-port 9090
+    ports:
+      - "8081:8081"
+
   ui:
     image: hltcoe/simple-search-demo
     command: --host 0.0.0.0 --port 8080 --fetch-host fetch --fetch-port 9090 --search-host kdft --search-port 9090 --lru-cache-size 50

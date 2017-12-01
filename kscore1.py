@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 
 import logging
-import csv, gzip
+
 from concrete.search.ttypes import SearchQuery, SearchType
 from concrete.util import SearchClientWrapper
 
@@ -19,9 +19,9 @@ def calc_kscore(search_client):
                 used[query] = 0
                 terms = query.split(" ")
                 for k_val in k_vals:
-                    #results = execute_search_query(search_client, terms, k_val)
-                    #for result in results:
-                        logging.info("Hi")
+                    results = execute_search_query(search_client, terms, k_val)
+                    for result in results:
+                        logging.info(result)
             else:
                 continue
     # kmatches = qmatches[:k]
@@ -59,7 +59,7 @@ def main():
                         help='Port of Search service')
     parser.add_argument("--search-host", type=int, default="kdft",
                         help='Port of Search service')
-    parser.add_argument("--fetch-port", type=int, default=9090,
+    parser.add_argument("--port", type=int, default=9090,
                         help='Port of Search service')
     parser.add_argument("--fetch-host", type=int, default="fetch",
                         help='Port of Search service')
