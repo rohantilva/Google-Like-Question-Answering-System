@@ -6,31 +6,6 @@ from concrete.search.ttypes import SearchQuery, SearchType
 from concrete.util import SearchClientWrapper
 
 
-def calc_kscore(search_client):
-    truth = []
-    with gzip.open("WikiQA-dev.tsv.gz", "r") as wiki:
-        reader = csv.reader(wiki)
-        next(reader)
-        used = {}
-        k_vals = [1, 10, 100, 1000]
-        for row in reader:
-            query = row[1]
-            if query not in used:
-                used[query] = 0
-                terms = query.split(" ")
-                for k_val in k_vals:
-                    results = execute_search_query(search_client, terms, k_val)
-                    for result in results:
-                        logging.info(result)
-            else:
-                continue
-    # kmatches = qmatches[:k]
-    correct = 0
-    #for m in kmatches:
-        #if m in truth:
-            #correct += 1
-    return(correct)
-
 def execute_search_query(search_client, terms, k):
     logging.debug("executing query '{}'".format(' '.join(terms)))
     query = SearchQuery(type=SearchType.COMMUNICATIONS, terms=terms, k=k)
@@ -55,14 +30,27 @@ def main():
                         help='Hostname of Search service')
     parser.add_argument("--port", type=int, default=9090,
                         help='Port of Search service')
-    parser.add_argument("--search-port", type=int, default=9090,
-                        help='Port of Search service')
-    parser.add_argument("--search-host", type=int, default="kdft",
-                        help='Port of Search service')
-    parser.add_argument("--port", type=int, default=9090,
-                        help='Port of Search service')
-    parser.add_argument("--fetch-host", type=int, default="fetch",
-                        help='Port of Search service')
+    parser.add_argument("-k", type=int, default=10,
+                        help='Maximum number of hits to return per query.')
+    parser.add_argument('-i', action='store_true',
+                        help='Start interactive client (read queries on '
+                             'terminal, one at a time, terms delimited by '
+                             'spaces).')
+    parser.add_argument('-b', action='store_true',
+                        help='Perform batch of queries (read queries from '
+                             'standard input, one per line, terms delimited '
+                             'by spaces).')
+    parser.add_argument('--with-scores', action='store_true',
+                        help='Print score next to each hit (separated by a '
+                             'tab).')
+    parser.add_argument('-l', '--loglevel', '--log-level',
+                        help='Logging verbosity level threshold (to stderr)',
+                        default='info')
+    parser.add_argument('terms',
+                        metavar='term',
+                        nargs='*',
+                        help='Single query to perform '
+                             '(mutually exclusive with -b and -i).')
     args = parser.parse_args()
 
     logging.basicConfig(format='%(asctime)-15s %(levelname)s: %(message)s',
@@ -113,14 +101,13 @@ def main():
     else:
         logging.info('starting single-query non-interactive search client...')
         with SearchClientWrapper(args.host, args.port) as search_client:
-            calc_kscore(search_client)
-            '''for (comm_id, score) in execute_search_query(search_client,
+            for (comm_id, score) in execute_search_query(search_client,
                                                          args.terms,
                                                          args.k):
                 if args.with_scores:
                     print('{}	{}'.format(comm_id, score))
                 else:
-                    print(comm_id)'''
+                    print(comm_id)
 
 
 if __name__ == "__main__":

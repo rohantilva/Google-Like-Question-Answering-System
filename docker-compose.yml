@@ -50,9 +50,10 @@ services:
   kscore:
     depends_on:
       - fetch
+      - search
       - kdft
     image: kscore
-    command: -p 9090 --host 0.0.0.0 --search-port 9090 --search-host kdft --fetch-host fetch --fetch-port 9090
+    command: --port 9090 --host kdft terms clarence clemons
     ports:
       - "8081:8081"
 
