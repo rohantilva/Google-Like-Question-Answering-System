@@ -3,7 +3,7 @@ import gzip
 from scipy.sparse import csr_matrix
 np.set_printoptions(threshold=np.nan)
 
-def preprocess(word_dict, q_list, a_list):
+def preprocess(word_dict, q_list, a_list, min_count=3):
     count = 0
     count1 = 0
     with gzip.open('data/WikiQA/WikiQA-train.tsv.gz', 'rb') as f:
@@ -16,17 +16,21 @@ def preprocess(word_dict, q_list, a_list):
             q = arr[1].split(" ")
             a = arr[5].split(" ")
             for word in q:
-                if word not in q_list:
-                    q_list[word] = count
-                    count += 1
+                if word not in q_list.keys():
+                    q_list[word] = 0
+                q_list[word] += 1
             for word in a:
-                if word not in a_list:
-                    a_list[word] = count1
-                    count1 += 1
+                if word not in a_list.keys():
+                    a_list[word] = 0
+                q_list[word] += 1
                     
         f.seek(0)
         #matrix = csr_matrix((len(a_list), len(q_list)))
-        matrix = np.zeros((len(a_list), len(q_list)))
+        trunc_q_list = dict(
+            (k, v) for (k, v) in q_list.items() if v >= min_count)
+        trunc_a_list= dict(
+            (k, v) for (k, v) in a_list.items() if v >= min_count)
+        matrix = np.zeros((len(a_list.keys()), len(q_list.keys())))
         print(matrix.shape)
         counter = 0
         for line in f:
