@@ -1,5 +1,6 @@
 from sklearn.svm import LinearSVC
-from sklearn.metrics import f1_score, accuracy_score
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import f1_score, accuracy_score, precision_score, recall_score
 import pickle
 import numpy as np
 from random import shuffle
@@ -36,26 +37,29 @@ def subtractive_balance(x, y):
 
 
 def train_model(train_data, dev_data):
-    model = LinearSVC()
     x_train = train_data['x']
     x_train = x_train.reshape(-1, 1)
     y_train = train_data['y']
     (x_train, y_train) = subtractive_balance(x_train, y_train)
-    model.fit(x_train, y_train)
 
     x_dev = dev_data['x']
     x_dev = x_dev.reshape(-1, 1)
     y_dev = dev_data['y']
-    y_hat = model.predict(x_dev)
 
-    acc = accuracy_score(y_dev, y_hat) 
-    f1 = f1_score(y_dev, y_hat)
-
-    for i in range(len(y_dev)):
-        print((y_dev[i], y_hat[i]))
-
-    print("Accuracy: " + str(acc))
-    print("F1: " + str(f1))
+    C = 1e-7
+    curr_best_C = 0
+    f1_scores = []
+    while (C <= 1e7):  
+        model = LinearSVC(C=C)
+        model.fit(x_train, y_train)
+        y_dev_pred = model.predict(x_dev)
+        f1 = f1_score(y_dev, y_dev_pred)
+        print("C-value: ", C)
+        print("F1 Score: ", f1)
+        print("P: ", precision_score(y_dev, y_dev_pred))
+        print("R: ", recall_score(y_dev, y_dev_pred))
+        f1_scores.append(f1)
+        C = C * 10
 
 
 def main():
