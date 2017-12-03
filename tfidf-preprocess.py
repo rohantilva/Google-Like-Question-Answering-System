@@ -68,25 +68,19 @@ def cosine_sim(dataset, q_scores, a_scores):
             for w in a:
                 ascore_vec.append(a_scores[w])
             qscore_vec = np.asarray(qscore_vec)
-            #qscore_vec = qscore_vec.reshape(-1, 1)
-            print(qscore_vec)
+            qscore_vec = qscore_vec.reshape(1, -1)
             ascore_vec = np.asarray(ascore_vec)
-            ascore_vec = np.transpose(ascore_vec)
-
-            #ascore_vec = ascore_vec.reshape(-1, 1)
-            print(ascore_vec)
-            #cos_sim = sklearn.metrics.pairwise.cosine_similarity(qscore_vec, ascore_vec)
+            ascore_vec = ascore_vec.reshape(1, -1)
+            cos_sim = sklearn.metrics.pairwise.cosine_similarity(qscore_vec, ascore_vec)
             sim_vec.append(cos_sim)
     print(sim_vec)
     return(sim_vec)
 
 def test():
-    vec1 = [1, 0, -1]
-    vec2 = [-1, -1, 0]
-    #vec2 = np.transpose(vec2)
-    d = np.dot(vec1, vec2)
-    #denom = vec1.size * vec2.size
-    #cos = d/denom
+    vec1 = np.asarray([1, 0, -1])
+    vec1 = vec1.reshape(1, -1)
+    vec2 = np.asarray([-1, -1, 0])
+    vec2 = vec2.reshape(1, -1)
     csim = sklearn.metrics.pairwise.cosine_similarity(vec1, vec2)
     print(csim)
 
@@ -95,8 +89,7 @@ def main():
     tfidf = calc_tfidf(dpath, {}, {})
     q_scores = tfidf[0]
     a_scores = tfidf[1]
-    #cosine_sim(dpath, q_scores, a_scores)
-    test()
+    cosine_sim(dpath, q_scores, a_scores)
 
 if __name__ == '__main__':
     main()
