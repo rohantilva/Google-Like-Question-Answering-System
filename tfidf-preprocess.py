@@ -68,28 +68,26 @@ def cosine_sim(dataset, q_scores, a_scores):
             for w in a:
                 ascore_vec.append(a_scores[w])
             qscore_vec = np.asarray(qscore_vec)
-            qscore_vec = qscore_vec.reshape(1, -1)
             ascore_vec = np.asarray(ascore_vec)
+            qscore_size = qscore_vec.size
+            ascore_size = ascore_vec.size
+            qscore_vec = np.pad(qscore_vec, (0, ((ascore_size - qscore_size) if (ascore_size - qscore_size) > 0 else 0)), 'constant')
+            ascore_vec = np.pad(ascore_vec, (0, ((qscore_size - ascore_size) if (qscore_size - ascore_size) > 0 else 0)), 'constant')
+            qscore_vec = qscore_vec.reshape(1, -1)
             ascore_vec = ascore_vec.reshape(1, -1)
             cos_sim = sklearn.metrics.pairwise.cosine_similarity(qscore_vec, ascore_vec)
             sim_vec.append(cos_sim)
-    print(sim_vec)
     return(sim_vec)
 
-def test():
-    vec1 = np.asarray([1, 0, -1])
-    vec1 = vec1.reshape(1, -1)
-    vec2 = np.asarray([-1, -1, 0])
-    vec2 = vec2.reshape(1, -1)
-    csim = sklearn.metrics.pairwise.cosine_similarity(vec1, vec2)
-    print(csim)
 
 def main():
     dpath = "data/WikiQA/WikiQA-train.tsv.gz"
     tfidf = calc_tfidf(dpath, {}, {})
     q_scores = tfidf[0]
     a_scores = tfidf[1]
-    cosine_sim(dpath, q_scores, a_scores)
+    sims = cosine_sim(dpath, q_scores, a_scores)
+    for val in sims:
+        print(val)
 
 if __name__ == '__main__':
     main()
