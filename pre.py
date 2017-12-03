@@ -9,9 +9,9 @@ def preprocess(word_dict, q_list, a_list, min_count=3):
     with gzip.open('data/WikiQA/WikiQA-train.tsv.gz', 'rb') as f:
         for line in f:
             line = line.decode('UTF-8')
-            line = line.replace("\n", "")
-            line = line.replace("\r", "")
-            line = line.replace("?", "")
+            for ch in ["\n", "\r", "?"]:
+                if ch in line:
+                    line = line.replace(ch, "")
             arr = line.split("\t")
             q = arr[1].split(" ")
             a = arr[5].split(" ")
