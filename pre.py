@@ -22,7 +22,7 @@ def preprocess(word_dict, q_list, a_list, min_count=3):
             for word in a:
                 if word not in a_list.keys():
                     a_list[word] = 0
-                q_list[word] += 1
+                a_list[word] += 1
                     
         f.seek(0)
         #matrix = csr_matrix((len(a_list), len(q_list)))
