@@ -1,12 +1,16 @@
 import numpy as np
 import sklearn.metrics.pairwise
+import sklearn
 import math
 import gzip
 from scipy import sparse
 import logging
+import pickle
 
-def get_distinct_words(dataset):
+
+def get_distinct_words_labels(dataset):
     distinct_words = {}
+    labels = []
     count = 0
     with gzip.open(dataset, 'rb') as f:
         next(f)
@@ -19,6 +23,8 @@ def get_distinct_words(dataset):
             arr = line.split("\t")
             q = arr[1].split(" ")
             a = arr[5].split(" ")
+            label = int(arr[6])
+            labels.append(label)
             for word in q:
                 if word not in distinct_words.keys():
                     distinct_words[word] = count
@@ -27,7 +33,7 @@ def get_distinct_words(dataset):
                 if word not in distinct_words.keys():
                     distinct_words[word] = count
                     count += 1
-    return distinct_words
+    return(distinct_words, np.asarray(labels))
 
 
 def calc_tfidf(dataset, q_list, a_list):
@@ -75,7 +81,7 @@ def calc_tfidf(dataset, q_list, a_list):
     return (q_scores, a_scores)
 
 
-def new_cosine_sim(dataset, q_scores, a_scores, temp):
+def cosine_sim(dataset, q_scores, a_scores, temp):
     sim_vec = []
     line_count = 0
     with gzip.open(dataset, 'rb') as f:
@@ -104,12 +110,47 @@ def new_cosine_sim(dataset, q_scores, a_scores, temp):
 
 
 def main():
-    dpath = "data/WikiQA/WikiQA-train.tsv.gz"
-    temp = get_distinct_words(dpath)
-    tfidf = calc_tfidf(dpath, {}, {})
+    trainpath = "data/WikiQA/WikiQA-train.tsv.gz"
+    first_pass = get_distinct_words_labels(trainpath)
+    distinct_train = first_pass[0]
+    labels_train = first_pass[1]
+    tfidf = calc_tfidf(trainpath, {}, {})
     q_scores = tfidf[0]
     a_scores = tfidf[1]
-    sims = new_cosine_sim(dpath, q_scores, a_scores, temp)
+    sims = cosine_sim(trainpath, q_scores, a_scores, distinct_train)
+    
+    train_package = dict(x=sims, y=labels_train)
+    with open("./processed_train.p", "wb") as p:
+        pickle.dump(train_package, p)
+    p.close()
+    
+    devpath = "data/WikiQA/WikiQA-dev.tsv.gz"
+    first_pass = get_distinct_words_labels(devpath)
+    distinct_dev = first_pass[0]
+    labels_dev = first_pass[1]
+    tfidf = calc_tfidf(devpath, {}, {})
+    q_scores = tfidf[0]
+    a_scores = tfidf[1]
+    sims = cosine_sim(devpath, q_scores, a_scores, distinct_dev)
+
+    dev_package = dict(x=sims, y=labels_dev)
+    with open("./processed_dev.p", "wb") as p:
+        pickle.dump(dev_package, p)
+    p.close()
+
+    testpath = "data/WikiQA/WikiQA-test.tsv.gz"
+    first_pass = get_distinct_words_labels(testpath)
+    distinct_test = first_pass[0]
+    labels_test = first_pass[1]
+    tfidf = calc_tfidf(testpath, {}, {})
+    q_scores = tfidf[0]
+    a_scores = tfidf[1]
+    sims = cosine_sim(testpath, q_scores, a_scores, distinct_test)
+
+    dev_package = dict(x=sims, y=labels_test)
+    with open("./processed_test.p", "wb") as p:
+        pickle.dump(test_package, p)
+    p.close()
 
 if __name__ == '__main__':
     main()
