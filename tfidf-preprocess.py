@@ -117,7 +117,8 @@ def main():
     tfidf = calc_tfidf(trainpath, {}, {})
     q_scores = tfidf[0]
     a_scores = tfidf[1]
-    sims = cosine_sim(trainpath, q_scores, a_scores, distinct_train)
+    sims = np.asarray(cosine_sim(trainpath, q_scores, a_scores, distinct_train))
+    sims = sims.flatten()
     
     train_package = dict(x=sims, y=labels_train)
     with open("./processed_train.p", "wb") as p:
@@ -131,7 +132,8 @@ def main():
     tfidf = calc_tfidf(devpath, {}, {})
     q_scores = tfidf[0]
     a_scores = tfidf[1]
-    sims = cosine_sim(devpath, q_scores, a_scores, distinct_dev)
+    sims = np.asarray(cosine_sim(devpath, q_scores, a_scores, distinct_dev))
+    sims = sims.flatten()
 
     dev_package = dict(x=sims, y=labels_dev)
     with open("./processed_dev.p", "wb") as p:
@@ -145,9 +147,10 @@ def main():
     tfidf = calc_tfidf(testpath, {}, {})
     q_scores = tfidf[0]
     a_scores = tfidf[1]
-    sims = cosine_sim(testpath, q_scores, a_scores, distinct_test)
+    sims = np.asarray(cosine_sim(testpath, q_scores, a_scores, distinct_test))
+    sims = sims.flatten() 
 
-    dev_package = dict(x=sims, y=labels_test)
+    test_package = dict(x=sims, y=labels_test)
     with open("./processed_test.p", "wb") as p:
         pickle.dump(test_package, p)
     p.close()
