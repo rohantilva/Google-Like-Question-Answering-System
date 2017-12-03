@@ -77,9 +77,11 @@ def calc_tfidf(dataset, q_list, a_list):
 
 def new_cosine_sim(dataset, q_scores, a_scores, temp):
     sim_vec = []
+    line_count = 0
     with gzip.open(dataset, 'rb') as f:
         next(f)
         for line in f:
+            line_count += 1
             line = line.decode('UTF-8')
             for ch in ["\n", "\r", "?"]:
                 if ch in line:
@@ -94,58 +96,11 @@ def new_cosine_sim(dataset, q_scores, a_scores, temp):
             ascore_vec = np.zeros(len(temp))
             for w in a:
                 ascore_vec[temp[w]] = a_scores[w]
-            #qscore_vec = np.asarray(qscore_vec)
-            #ascore_vec = np.asarray(ascore_vec)
-            #qscore_size = qscore_vec.size
-            #ascore_size = ascore_vec.size
-            #qscore_vec = np.pad(qscore_vec, (0, ((ascore_size - qscore_size) if (ascore_size - qscore_size) > 0 else 0)), 'constant')
-            #ascore_vec = np.pad(ascore_vec, (0, ((qscore_size - ascore_size) if (qscore_size - ascore_size) > 0 else 0)), 'constant')
-            # TODO uncomment reshape
-            #qscore_vec = qscore_vec.reshape(-1, 1)
-            #ascore_vec = ascore_vec.reshape(-1, 1)
-            A = np.array([qscore_vec, ascore_vec])
-            A_sparse = sparse.csr_matrix(A)
-            #print("qscore shape: " + str(qscore_vec.shape))
-            #print(ascore_vec.shape)
-            logging.debug("running cosine similarity on vectors")
-            cos_sim = sklearn.metrics.pairwise.cosine_similarity(A_sparse)
-            sim_vec.append(cos_sim)
-            logging.debug("appending cos_sim vector")
-    return sim_vec
-
-
-
-def cosine_sim(dataset, q_scores, a_scores):
-    sim_vec = []
-    with gzip.open(dataset, 'rb') as f:
-        next(f)
-        for line in f:
-            line = line.decode('UTF-8')
-            for ch in ["\n", "\r", "?"]:
-                if ch in line:
-                    line = line.replace(ch, "")
-            line = line.lower()
-            arr = line.split("\t")
-            q = arr[1].split(" ")
-            a = arr[5].split(" ")
-            qscore_vec = []
-            for w in q:
-                qscore_vec.append(q_scores[w])
-            ascore_vec = []
-            for w in a:
-                ascore_vec.append(a_scores[w])
-            qscore_vec = np.asarray(qscore_vec)
-            ascore_vec = np.asarray(ascore_vec)
-            qscore_size = qscore_vec.size
-            ascore_size = ascore_vec.size
-            qscore_vec = np.pad(qscore_vec, (0, ((ascore_size - qscore_size) if (ascore_size - qscore_size) > 0 else 0)), 'constant')
-            ascore_vec = np.pad(ascore_vec, (0, ((qscore_size - ascore_size) if (qscore_size - ascore_size) > 0 else 0)), 'constant')
-            qscore_vec = qscore_vec.reshape(1, -1)
-            ascore_vec = ascore_vec.reshape(1, -1)
-            cos_sim = sklearn.metrics.pairwise.cosine_similarity(qscore_vec, ascore_vec)
+            qscore_sparse = sparse.csr_matrix(qscore_vec)
+            ascore_sparse = sparse.csr_matrix(ascore_vec)
+            cos_sim = sklearn.metrics.pairwise.cosine_similarity(qscore_sparse, ascore_sparse)
             sim_vec.append(cos_sim)
     return(sim_vec)
-
 
 
 def main():
@@ -155,10 +110,6 @@ def main():
     q_scores = tfidf[0]
     a_scores = tfidf[1]
     sims = new_cosine_sim(dpath, q_scores, a_scores, temp)
-    print(sims)
-    #sims = cosine_sim(dpath, q_scores, a_scores)
-    #for val in sims:
-    #    print(val)
 
 if __name__ == '__main__':
     main()
