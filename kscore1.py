@@ -103,7 +103,7 @@ def main():
         with SearchClientWrapper(args.host, args.port) as search_client:
             for (comm_id, score) in execute_search_query(search_client,
                                                          args.terms,
-                                                         args.k):
+                                                         10):
                 if args.with_scores:
                     print('{}	{}'.format(comm_id, score))
                 else:

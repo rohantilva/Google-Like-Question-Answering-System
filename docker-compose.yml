@@ -53,7 +53,7 @@ services:
       - search
       - kdft
     image: kscore
-    command: --port 9090 --host kdft terms clarence clemons
+    command: --port 9090 --host kdft
     ports:
       - "8081:8081"
 
