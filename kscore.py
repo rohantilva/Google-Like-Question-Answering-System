@@ -1,30 +1,65 @@
-#!/usr/bin/env python3
+#!/usr/bin/env python
 
+import time, csv, gzip
 import logging
-import csv, gzip, time
-from concrete.search.ttypes import SearchQuery, SearchType
-from concrete.util import SearchClientWrapper
+
+from concrete import AnnotationMetadata, ServiceInfo
+from concrete.search import SearchService
+from concrete.search.ttypes import SearchResult, SearchCapability, SearchType, SearchQuery
+from concrete.services.ttypes import ServicesException
+from concrete.util import AnalyticUUIDGeneratorFactory, SearchServiceWrapper, SearchClientWrapper
 
 
-def calc_kscore(search_client):
+class SearchHandler(SearchService.Iface):
+    def __init__(self, other, corpus_name, host, port):
+        self.other = other
+        self.corpus_name = corpus_name
+        self.port = port
+        self.host = host
+    def alive(self):
+        return True
+
+    def about(self):
+        return ServiceInfo(name='search kscore', version='0.0')
+
+    def getCapabilities(self):
+        return [SearchCapability(SearchType.SENTENCES)]
+        # raise ServicesException()
+
+    def getCorpora(self):
+        raise [self.corpus_name]
+
+    def search(self, query):
+        print(query)
+        return self.other.search(query)
+        # augf = AnalyticUUIDGeneratorFactory()
+        # aug = augf.create()
+        # with SearchClientWrapper(self.host, self.port) as sc:
+            # return sc.search(query)
+
+def kscore(s):
     truth = []
-    time.sleep(10)
     with gzip.open("WikiQA-dev.tsv.gz", 'rt') as wiki:
-        reader = csv.reader(wiki)
+        reader = csv.reader(wiki, delimiter="\t", quotechar="'")
         next(reader)
         used = {}
         k_vals = [1, 10, 100, 1000]
         for row in reader:
             print(row)
-            row = row[0].split("\t")
             query = row[1]
+            query = query.replace(","," ")
+            query = query.replace("'"," ")
+            query = query.replace('"',"")
+            query = query.replace("/"," ")
+            query = query.replace("?","")
             if query not in used:
                 used[query] = 0
                 terms = query.split(" ")
                 for k_val in k_vals:
-                    results = execute_search_query(search_client, terms, k_val)
-                    for result in results:
-                        print(result)
+                    query1 = SearchQuery(type=SearchType.SENTENCES, terms=terms, k=k_val, rawQuery=query)
+                    results = s.search(query1)
+                    # for result in results.searchResultItems:
+                        # print(k_val)
             else:
                 continue
     # kmatches = qmatches[:k]
@@ -34,48 +69,20 @@ def calc_kscore(search_client):
             #correct += 1
     return(correct)
 
-def execute_search_query(search_client, terms, k):
-    logging.debug("executing query '{}'".format(' '.join(terms)))
-    query = SearchQuery(type=SearchType.COMMUNICATIONS, terms=terms, k=k)
-    result = search_client.search(query)
-    return [
-        (item.communicationId, item.score)
-        for item in result.searchResultItems
-    ]
-
-
-def main():
-    from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
-    import sys
-
-    parser = ArgumentParser(
-        formatter_class=ArgumentDefaultsHelpFormatter,
-        description='Concrete Search client (allows specifying query on '
-                    'command line, interactively on the terminal, or '
-                    'in batch from standard input).'
-    )
-    parser.add_argument("--host", default="localhost",
-                        help='Hostname of Search service')
-    parser.add_argument("--port", type=int, default=8081,
-                        help='Port of Search service')
-    parser.add_argument("--search_port", type=int, default=9090,
-                        help='Port of Search service')
-    parser.add_argument("--search_host", default="kdft",
-                        help='Port of Search service')
-    parser.add_argument("--fetch_port", type=int, default=9090,
-                        help='Port of Search service')
-    parser.add_argument("--fetch_host", default="fetch",
-                        help='Port of Search service')
-    args = parser.parse_args()
-
-
-
-
-
-    logging.info('starting single-query non-interactive search client...')
-    with SearchClientWrapper(args.search_host, args.search_port) as search_client:
-        calc_kscore(search_client)
-
 
 if __name__ == "__main__":
-    main()
+    from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
+
+    parser = ArgumentParser(formatter_class=ArgumentDefaultsHelpFormatter)
+    parser.add_argument("-p", "--port", type=int, default=9090)
+    parser.add_argument("--host", default="kdft")
+    args = parser.parse_args()
+
+    logging.basicConfig(format='%(asctime)-15s %(levelname)s: %(message)s',
+                        level='DEBUG')
+    print(args.host)
+    print(args.port)   
+    time.sleep(10)
+    with SearchClientWrapper(args.host, args.port) as search_client:
+        handler = SearchHandler(search_client, "wikiQA", "", "")
+        kscore(handler)

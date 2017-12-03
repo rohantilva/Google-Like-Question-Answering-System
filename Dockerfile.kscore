@@ -3,10 +3,10 @@ FROM python:3
 
 RUN pip install concrete==4.13.3
 
-ADD kscore2.py /opt/
+ADD kscore.py /opt/
 ADD /data/WikiQA/WikiQA-dev.tsv.gz /opt/
 ADD /data/WikiQA-match/dev-match.tsv /opt/
 
 WORKDIR /opt
 
-ENTRYPOINT ["python", "kscore2.py"]
+ENTRYPOINT ["python", "kscore.py"]
