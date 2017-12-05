@@ -72,6 +72,7 @@ def kscore(s):
                     results = s.search(query1)
                     atK = 0
                     totCorrect = 0
+                    hasAnswerInMatch = False
                     for result in results.searchResultItems:
                         if atK == k_val:
                             break
@@ -79,10 +80,13 @@ def kscore(s):
                             atK += 1
                             try:
                                 totCorrect += int(answer_labels[result.sentenceId.uuidString])
+                                hasAnswerInMatch = True
                             except (KeyError):
                                 atK -= 1
-                    k_val_dict[k_val][0] += totCorrect
-                    k_val_dict[k_val][1] += atK
+                    if totCorrect >= 1:
+                        k_val_dict[k_val][0] += 1
+                    if hasAnswerInMatch:
+                        k_val_dict[k_val][1] += 1
 
             else:
                 continue
