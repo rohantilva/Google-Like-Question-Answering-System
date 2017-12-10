@@ -38,6 +38,9 @@ class SearchHandler(SearchService.Iface):
 
 class SearchKDFT:
     def search(self, string):
+        string = string.replace('"',"")
+        string = string.replace("/"," ")
+        string = string.replace("?","")
         terms = string.split(" ")
         with SearchClientWrapper("172.19.0.4", 9090) as search_client:
             handler = SearchHandler(search_client, "wikiQA", "", "")
