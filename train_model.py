@@ -35,17 +35,14 @@ def subtractive_balance(x, y):
     return (x[id_bal], y[id_bal])
 
 
-
 def train_model(train_data, dev_data):
     x_train = train_data['x']
-    x_train = x_train.reshape(-1, 1)
+    #x_train = x_train.reshape(-1, 1)
     y_train = train_data['y']
     (x_train, y_train) = subtractive_balance(x_train, y_train)
-
     x_dev = dev_data['x']
-    x_dev = x_dev.reshape(-1, 1)
+    #x_dev = x_dev.reshape(-1, 1)
     y_dev = dev_data['y']
-
     C = 1e-7
     curr_best_C = 0
     best_f1 = 0
@@ -74,8 +71,7 @@ def main():
     dev_data = pickle.load(open("./processed_dev.p", "rb"))
     train_model(train_data, dev_data)
 
-    
-
 
 if __name__ == '__main__':
     main()
+
