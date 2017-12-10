@@ -6,6 +6,7 @@ import gzip
 from scipy import sparse
 import logging
 import pickle
+import re
 
 
 def get_distinct_words_labels(dataset):
@@ -16,13 +17,15 @@ def get_distinct_words_labels(dataset):
         next(f)
         for line in f:
             line = line.decode('UTF-8')
-            for ch in ["\n", "\r", "?"]:
-                if ch in line:
-                    line = line.replace(ch, "")
             line = line.lower()
             arr = line.split("\t")
-            q = arr[1].split(" ")
-            a = arr[5].split(" ")
+            alpha = re.compile('[^0-9a-zA-Z]')
+            q = alpha.sub(' ', str(arr[1]))
+            q = q.split()
+            print(q)
+            a = alpha.sub(' ', str(arr[5]))
+            a = a.split()
+            print(a)
             label = int(arr[6])
             labels.append(label)
             for word in q:
@@ -43,13 +46,13 @@ def calc_tfidf(dataset, q_list, a_list):
         for line in f:
             question_count += 1
             line = line.decode('UTF-8')
-            for ch in ["\n", "\r", "?"]:
-                if ch in line:
-                    line = line.replace(ch, "")
             line = line.lower()
             arr = line.split("\t")
-            q = arr[1].split(" ")
-            a = arr[5].split(" ")
+            alpha = re.compile('[^0-9a-zA-Z]')
+            q = alpha.sub(' ', str(arr[1]))
+            q = q.split()
+            a = alpha.sub(' ', str(arr[5]))
+            a = a.split()
             unique_qw = dict((el, True) for el in q)
             unique_aw = dict((el, True) for el in a)
             for word in q:
@@ -89,13 +92,13 @@ def cosine_sim(dataset, q_scores, a_scores, temp):
         for line in f:
             line_count += 1
             line = line.decode('UTF-8')
-            for ch in ["\n", "\r", "?"]:
-                if ch in line:
-                    line = line.replace(ch, "")
             line = line.lower()
             arr = line.split("\t")
-            q = arr[1].split(" ")
-            a = arr[5].split(" ")
+            alpha = re.compile('[^0-9a-zA-Z]')
+            q = alpha.sub(' ', str(arr[1]))
+            q = q.split()
+            a = alpha.sub(' ', str(arr[5]))
+            a = a.split()
             qscore_vec = np.zeros(len(temp))
             for w in q:
                 qscore_vec[temp[w]] = q_scores[w]
