@@ -59,8 +59,8 @@ def kscore(s):
             print(row)
             query = row[1]
             sentenceID = row[4]
-            query = query.replace(","," ")
-            query = query.replace("'"," ")
+            # query = query.replace(","," ")
+            # query = query.replace("'"," ")
             query = query.replace('"',"")
             query = query.replace("/"," ")
             query = query.replace("?","")
@@ -83,6 +83,7 @@ def kscore(s):
                                 hasAnswerInMatch = True
                             except (KeyError):
                                 atK -= 1
+                         
                     if totCorrect >= 1:
                         k_val_dict[k_val][0] += 1
                     if hasAnswerInMatch:
