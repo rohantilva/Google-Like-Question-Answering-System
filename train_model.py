@@ -70,7 +70,7 @@ def train_model_SVM(train_data, dev_data, num_resamples=5):
     print(curr_best_C)
 
 
-def train_MLP(train_data, dev_data):
+def train_MLP(train_data, dev_data, num_resamples=5):
     x_train = train_data['x']
     #x_train = x_train.reshape(-1, 1)
     y_train = train_data['y']
@@ -78,13 +78,36 @@ def train_MLP(train_data, dev_data):
     x_dev = dev_data['x']
     #x_dev = x_dev.reshape(-1, 1)
     y_dev = dev_data['y']
-    clf = MLPClassifier(solver='lbfgs', alpha=1e-5, hidden_layer_sizes=(5, 2), random_state=1)
+    C = 1e-7
+    curr_best_C = 0
+    best_f1 = 0
+    best_p = 0
+    best_r = 0
+    f1_scores = []
+    while (C <= 1e7):
+        model = MLPClassifier(solver='lbfgs', alpha=C, random_state=1)
+        for sample_num in range(num_resamples):
+            (x_train_boot, y_train_boot) = resample(x_train, y_train)
+            model.fit(x_train_boot, y_train_boot)
+            y_dev_pred = model.predict(x_dev)
+            f1 = f1_score(y_dev, y_dev_pred)
+            if f1 > best_f1:
+                best_f1 = f1
+                curr_best_C = C
+                best_p = precision_score(y_dev, y_dev_pred)
+                best_r = recall_score(y_dev, y_dev_pred)
+        C = C * 10
+    print(best_f1)
+    print(best_p)
+    print(best_r)
+    print(curr_best_C)
 
 
 def main():
     train_data = pickle.load(open("./processed_train.p", "rb"))
     dev_data = pickle.load(open("./processed_dev.p", "rb"))
     train_model_SVM(train_data, dev_data)
+    train_MLP(train_data, dev_data)
 
 
 if __name__ == '__main__':
