@@ -6,7 +6,6 @@ import gzip
 from scipy import sparse
 import logging
 import pickle
-import re
 
 
 def get_distinct_words_labels(dataset):
@@ -17,13 +16,13 @@ def get_distinct_words_labels(dataset):
         next(f)
         for line in f:
             line = line.decode('UTF-8')
+            for ch in ["\n", "\r", "?"]:
+                if ch in line:
+                    line = line.replace(ch, "")
             line = line.lower()
             arr = line.split("\t")
-            alpha = re.compile('[^0-9a-zA-Z]')
-            q = alpha.sub(' ', str(arr[1]))
-            q = q.split()
-            a = alpha.sub(' ', str(arr[5]))
-            a = a.split()
+            q = arr[1].split(" ")
+            a = arr[5].split(" ")
             label = int(arr[6])
             labels.append(label)
             for word in q:
@@ -38,23 +37,19 @@ def get_distinct_words_labels(dataset):
 
 
 def calc_tfidf(dataset, q_list, a_list):
-    qids = {}
-    aids = {}
+    question_count = 0
     with gzip.open(dataset, 'rb') as f:
         next(f)
         for line in f:
+            question_count += 1
             line = line.decode('UTF-8')
+            for ch in ["\n", "\r", "?"]:
+                if ch in line:
+                    line = line.replace(ch, "")
             line = line.lower()
             arr = line.split("\t")
-            alpha = re.compile('[^0-9a-zA-Z]')
-            qid = arr[0]
-            qids[qid] = True
-            aid = arr[4]
-            aids[aid] = True
-            q = alpha.sub(' ', str(arr[1]))
-            q = q.split()
-            a = alpha.sub(' ', str(arr[5]))
-            a = a.split()
+            q = arr[1].split(" ")
+            a = arr[5].split(" ")
             unique_qw = dict((el, True) for el in q)
             unique_aw = dict((el, True) for el in a)
             for word in q:
@@ -68,15 +63,8 @@ def calc_tfidf(dataset, q_list, a_list):
                     a_list[word] = [0, 0]
                 a_list[word][0] += 1
             for k in unique_aw.keys():
-                a_list[k][1] += 1 
-    question_count = len(qids.keys())
-    answer_count = len(aids.keys())
-    mf_qs = sorted(q_list.items(), key=lambda x: x[1][0], reverse=True)
-    mf_as = sorted(a_list.items(), key=lambda x: x[1][0], reverse=True)
-    mf_qs = mf_qs[:200]
-    mf_as = mf_as[:200]
-    q_list = {word: counts for word, counts in q_list.items() if word not in mf_qs}
-    a_list = {word: counts for word, counts in a_list.items() if word not in mf_as}
+                a_list[k][1] += 1           
+    answer_count = question_count
     q_scores = {}
     for k in q_list.keys():
         val = q_list[k]
@@ -101,73 +89,116 @@ def cosine_sim(dataset, q_scores, a_scores, temp):
         for line in f:
             line_count += 1
             line = line.decode('UTF-8')
+            for ch in ["\n", "\r", "?"]:
+                if ch in line:
+                    line = line.replace(ch, "")
             line = line.lower()
             arr = line.split("\t")
-            alpha = re.compile('[^0-9a-zA-Z]')
-            q = alpha.sub(' ', str(arr[1]))
-            q = q.split()
-            a = alpha.sub(' ', str(arr[5]))
-            a = a.split()
+            q = arr[1].split(" ")
+            a = arr[5].split(" ")
             qscore_vec = np.zeros(len(temp))
             for w in q:
-                if w in temp.keys():
-                    qscore_vec[temp[w]] = q_scores[w]
+                qscore_vec[temp[w]] = q_scores[w]
             ascore_vec = np.zeros(len(temp))
             for w in a:
-                if w in temp.keys():
-                    ascore_vec[temp[w]] = a_scores[w]
+                ascore_vec[temp[w]] = a_scores[w]
             qscore_sparse = sparse.csr_matrix(qscore_vec)
             ascore_sparse = sparse.csr_matrix(ascore_vec)
             cos_sim = sklearn.metrics.pairwise.cosine_similarity(qscore_sparse, ascore_sparse)
             sim_vec.append(cos_sim)
     return(sim_vec)
 
+def get_question_word(dataset):
+    q_words = ["", "who", "what", "when", "where", "why", "how", "is", "whom"]
+    final_list = []
+    with gzip.open(dataset, 'rb') as f:
+        next(f)
+        for line in f:
+            line = line.decode('UTF-8')
+            for ch in ["\n", "\r", "?"]:
+                if ch in line:
+                    line = line.replace(ch, "")
+            line = line.lower()
+            arr = line.split("\t")
+            q = arr[1].split(" ")
+            #a = arr[5].split(" ")
+            index = 0
+            if q[0] in q_words:
+                index = q_words.index(q[0])
+            final_list.append(index)
+    return final_list
 
 def main():
     trainpath = "data/WikiQA/WikiQA-train.tsv.gz"
     first_pass = get_distinct_words_labels(trainpath)
+    question_list = get_question_word(trainpath)
     distinct_train = first_pass[0]
     labels_train = first_pass[1]
     tfidf = calc_tfidf(trainpath, {}, {})
     q_scores = tfidf[0]
     a_scores = tfidf[1]
     sims = np.asarray(cosine_sim(trainpath, q_scores, a_scores, distinct_train))
+    question_list = np.asarray(question_list)
     sims = sims.flatten()
-    
-    train_package = dict(x=sims, y=labels_train)
+    ttt = np.vstack((sims, question_list))
+    ttt = ttt.transpose()
+    print(ttt.shape)
+    print(ttt[0])
+    #temp = np.concatenate((sims, question_list))
+    #sims = sims.flatten()
+
+    train_package = dict(x=ttt, y=labels_train)
     with open("./processed_train.p", "wb") as p:
         pickle.dump(train_package, p)
     p.close()
     
     devpath = "data/WikiQA/WikiQA-dev.tsv.gz"
     first_pass = get_distinct_words_labels(devpath)
-    distinct_dev = first_pass[0]
+    question_list = get_question_word(devpath)
+    distinct_train = first_pass[0]
     labels_dev = first_pass[1]
     tfidf = calc_tfidf(devpath, {}, {})
     q_scores = tfidf[0]
     a_scores = tfidf[1]
-    sims = np.asarray(cosine_sim(devpath, q_scores, a_scores, distinct_dev))
+    sims = np.asarray(cosine_sim(devpath, q_scores, a_scores, distinct_train))
+    question_list = np.asarray(question_list)
     sims = sims.flatten()
+    ttt = np.vstack((sims, question_list))
+    ttt = ttt.transpose()
 
-    dev_package = dict(x=sims, y=labels_dev)
+    dev_package = dict(x=ttt, y=labels_dev)
     with open("./processed_dev.p", "wb") as p:
         pickle.dump(dev_package, p)
     p.close()
+    #devpath = "data/WikiQA/WikiQA-dev.tsv.gz"
+    #first_pass = get_distinct_words_labels(devpath)
+    #distinct_dev = first_pass[0]
+    #labels_dev = first_pass[1]
+    #tfidf = calc_tfidf(devpath, {}, {})
+    #q_scores = tfidf[0]
+    #a_scores = tfidf[1]
+    #sims = np.asarray(cosine_sim(devpath, q_scores, a_scores, distinct_dev))
+    #sims = sims.flatten()
 
-    testpath = "data/WikiQA/WikiQA-test.tsv.gz"
-    first_pass = get_distinct_words_labels(testpath)
-    distinct_test = first_pass[0]
-    labels_test = first_pass[1]
-    tfidf = calc_tfidf(testpath, {}, {})
-    q_scores = tfidf[0]
-    a_scores = tfidf[1]
-    sims = np.asarray(cosine_sim(testpath, q_scores, a_scores, distinct_test))
-    sims = sims.flatten() 
+    #dev_package = dict(x=sims, y=labels_dev)
+    #with open("./processed_dev.p", "wb") as p:
+    #    pickle.dump(dev_package, p)
+    #p.close()
 
-    test_package = dict(x=sims, y=labels_test)
-    with open("./processed_test.p", "wb") as p:
-        pickle.dump(test_package, p)
-    p.close()
+    #testpath = "data/WikiQA/WikiQA-test.tsv.gz"
+    #first_pass = get_distinct_words_labels(testpath)
+    #distinct_test = first_pass[0]
+    #labels_test = first_pass[1]
+    #tfidf = calc_tfidf(testpath, {}, {})
+    #q_scores = tfidf[0]
+    #a_scores = tfidf[1]
+    #sims = np.asarray(cosine_sim(testpath, q_scores, a_scores, distinct_test))
+    #sims = sims.flatten() 
+
+    #test_package = dict(x=sims, y=labels_test)
+    #with open("./processed_test.p", "wb") as p:
+    #    pickle.dump(test_package, p)
+    #p.close()
 
 if __name__ == '__main__':
     main()

@@ -30,11 +30,11 @@ class SearchHandler(SearchService.Iface):
         raise [self.corpus_name]
 
     def search(self, query):
-        # return self.other.search(query)
+        return self.other.search(query)
         # augf = AnalyticUUIDGeneratorFactory()
         # aug = augf.create()
-        with SearchClientWrapper(self.host, self.port) as sc:
-            return sc.search(query)
+        # with SearchClientWrapper(self.host, self.port) as sc:
+            # return sc.search(query)
 
 
 if __name__ == "__main__":
@@ -51,11 +51,11 @@ if __name__ == "__main__":
                         level='DEBUG')
     
     # time.sleep(10000)
-    # with SearchClientWrapper("search", "9090") as search_client:
-    # handler = SearchHandler(search_client, "wikiQA", "", "")
-    handler = SearchHandler(None, "wikiQA", args.search_host, args.search_port)
+    with SearchClientWrapper("search", "9090") as search_client:
+        handler = SearchHandler(search_client, "wikiQA", "", "")
+    #handler = SearchHandler(None, "wikiQA", args.search_host, args.search_port)
+    
+        server = SearchServiceWrapper(handler)
 
-    server = SearchServiceWrapper(handler)
-
-    logging.info('Starting the server...')
-    server.serve(args.host, args.port)
+        logging.info('Starting the server...')
+        server.serve(args.host, args.port)
