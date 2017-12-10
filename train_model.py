@@ -48,18 +48,25 @@ def train_model(train_data, dev_data):
 
     C = 1e-7
     curr_best_C = 0
+    best_f1 = 0
+    best_p = 0
+    best_r = 0
     f1_scores = []
     while (C <= 1e7):  
         model = LinearSVC(C=C)
         model.fit(x_train, y_train)
         y_dev_pred = model.predict(x_dev)
         f1 = f1_score(y_dev, y_dev_pred)
-        print("C-value: ", C)
-        print("F1 Score: ", f1)
-        print("P: ", precision_score(y_dev, y_dev_pred))
-        print("R: ", recall_score(y_dev, y_dev_pred))
-        f1_scores.append(f1)
+        if f1 > best_f1:
+            best_f1 = f1
+            curr_best_C = C
+            best_p = precision_score(y_dev, y_dev_pred)
+            best_r = recall_score(y_dev, y_dev_pred)
         C = C * 10
+    print(best_f1)
+    print(best_p)
+    print(best_r)
+    print(curr_best_C)
 
 
 def main():

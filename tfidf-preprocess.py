@@ -22,10 +22,8 @@ def get_distinct_words_labels(dataset):
             alpha = re.compile('[^0-9a-zA-Z]')
             q = alpha.sub(' ', str(arr[1]))
             q = q.split()
-            print(q)
             a = alpha.sub(' ', str(arr[5]))
             a = a.split()
-            print(a)
             label = int(arr[6])
             labels.append(label)
             for word in q:
@@ -40,15 +38,19 @@ def get_distinct_words_labels(dataset):
 
 
 def calc_tfidf(dataset, q_list, a_list):
-    question_count = 0
+    qids = {}
+    aids = {}
     with gzip.open(dataset, 'rb') as f:
         next(f)
         for line in f:
-            question_count += 1
             line = line.decode('UTF-8')
             line = line.lower()
             arr = line.split("\t")
             alpha = re.compile('[^0-9a-zA-Z]')
+            qid = arr[0]
+            qids[qid] = True
+            aid = arr[4]
+            aids[aid] = True
             q = alpha.sub(' ', str(arr[1]))
             q = q.split()
             a = alpha.sub(' ', str(arr[5]))
@@ -66,8 +68,19 @@ def calc_tfidf(dataset, q_list, a_list):
                     a_list[word] = [0, 0]
                 a_list[word][0] += 1
             for k in unique_aw.keys():
-                a_list[k][1] += 1           
-    answer_count = question_count
+                a_list[k][1] += 1 
+    question_count = len(qids.keys())
+    answer_count = len(aids.keys())
+    mf_qs = sorted(q_list.items(), key=lambda x: x[1][0], reverse=True)
+    mf_as = sorted(a_list.items(), key=lambda x: x[1][0], reverse=True)
+    mf_qs = mf_qs[:200]
+    mf_as = mf_as[:200]
+    print(mf_qs)
+    print(mf_as)
+    q_list = {word: counts for word, counts in q_list.items() if word not in mf_qs}
+    a_list = {word: counts for word, counts in a_list.items() if word not in mf_as}
+    # print(q_list)
+    # print(a_list)
     q_scores = {}
     for k in q_list.keys():
         val = q_list[k]
@@ -101,10 +114,12 @@ def cosine_sim(dataset, q_scores, a_scores, temp):
             a = a.split()
             qscore_vec = np.zeros(len(temp))
             for w in q:
-                qscore_vec[temp[w]] = q_scores[w]
+                if w in temp.keys():
+                    qscore_vec[temp[w]] = q_scores[w]
             ascore_vec = np.zeros(len(temp))
             for w in a:
-                ascore_vec[temp[w]] = a_scores[w]
+                if w in temp.keys():
+                    ascore_vec[temp[w]] = a_scores[w]
             qscore_sparse = sparse.csr_matrix(qscore_vec)
             ascore_sparse = sparse.csr_matrix(ascore_vec)
             cos_sim = sklearn.metrics.pairwise.cosine_similarity(qscore_sparse, ascore_sparse)
