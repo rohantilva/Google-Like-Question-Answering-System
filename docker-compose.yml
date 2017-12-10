@@ -47,15 +47,15 @@ services:
     ports:
       - "9092:9090"
 
-  kscore:
-    depends_on:
-      - fetch
-      - search
-      - kdft
-    image: kscore
-    command: --port 9090 --host kdft
-    ports:
-      - "8081:8081"
+  # kscore:
+    # depends_on:
+      # - fetch
+      # - search
+      # - kdft
+    # image: kscore
+    # command: --port 9090 --host kdft
+    # ports:
+      # - "8081:8081"
 
   ui:
     image: hltcoe/simple-search-demo
