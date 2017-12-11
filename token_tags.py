@@ -17,7 +17,7 @@ def get_tags(dataset, match):
 
 def match_dict(match):
     sent_match = {}
-    with gzip.open(match, "rb") as f:
+    with open(match, "rb") as f:
         next(f)
         for line in f:
             line = line.decode('UTF-8')
