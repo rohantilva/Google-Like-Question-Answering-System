@@ -47,7 +47,7 @@ def match_tags(match_dict):
                         for token in get_tokens(sentence.tokenization):
                             print(token)
             start_count += 50
-            start_count = min(start)
+            start_count = min(start_count)
 
 def main():
     matches = match_dict("./data/WikiQA-match/train-match.tsv")
