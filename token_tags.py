@@ -24,37 +24,49 @@ def match_dict(match):
             print(arr)
             sid = arr[0]
             caw_info = arr[2]
-            if sid not in sent_match.keys():
-                sent_match[sid] = [caw_info]
+            if caw_info not in sent_match.keys():
+                sent_match[caw_info] = [sid]
             else:
-                sent_match[sid].append(caw_info)
+                sent_match[caw_info].append(sid)
+                #print(sent_match[caw_info])
     return sent_match
 
 
 def match_tags(match_dict):
+    (caw_info, sid) = zip(*match_dict.items())
+    caw_info = list(caw_info)
+    sid = list(sid)
+    print(len(caw_info))
+    print(len(sid))
     with FetchCommunicationClientWrapper("ec2-35-153-184-225.compute-1.amazonaws.com", 9090) as fc:
         print("opened connection")
-        comm_count = fc.getCommunicationCount()
+        comm_count = len(caw_info) #fc.getCommunicationCount()
         start_count = 0
         while start_count != comm_count:
-            conn_comIDs = fc.getCommunicationIDs(
-                start_count, min(50, comm_count - start_count)
-            )
-            print(conn_comIDs)
-            fetchObj = FetchRequest(communicationIds=conn_comIDs)
+            end_count = min(50, comm_count - start_count)
+            curr_caws = caw_info[start_count:end_count]
+            print(curr_caws)
+            comm_ids = [i.split(':')[0] for i in curr_caws]
+            print(comm_ids)
+            fetchObj = FetchRequest(communicationIds=comm_ids)
             fr = fc.fetch(fetchObj)
+            print("butts")
+            print(fr.communications)
             for comm in fr.communications:
                 print(comm.id)
                 for section in lun(comm.sectionList):
+                    print(section)
                     for sentence in lun(section.sentenceList):
                         for token_tag in get_tagged_tokens(sentence.tokenization, 'POS'):
-                            print(token_tag)
+                            #print(token_tag)
+                            continue
             start_count += 50
             start_count = min(start_count, comm_count)
 
 def main():
     matches = match_dict("./data/WikiQA-match/train-match.tsv")
     #print(matches)
+    print(len(matches.keys()))
     match_tags(matches)
 
 
