@@ -85,12 +85,14 @@ def train_MLP(train_data, dev_data, num_resamples=5):
     best_r = 0
     f1_scores = []
     while (C <= 1e7):
-        model = MLPClassifier(solver='lbfgs', alpha=C, random_state=1)
+        model = MLPClassifier(solver='lbfgs', batch_size=750, learning_rate="adaptive", activation="tanh", max_iter=500, alpha=C)
         for sample_num in range(num_resamples):
             (x_train_boot, y_train_boot) = resample(x_train, y_train)
             model.fit(x_train_boot, y_train_boot)
             y_dev_pred = model.predict(x_dev)
             f1 = f1_score(y_dev, y_dev_pred)
+            print("F1: " + str(f1))
+            print("C: " + str(C))
             if f1 > best_f1:
                 best_f1 = f1
                 curr_best_C = C

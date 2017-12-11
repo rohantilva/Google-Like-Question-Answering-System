@@ -142,6 +142,23 @@ def get_question_word(dataset):
     return final_list
 
 
+def candidate_location_tag(qa_data, match_data):
+    match_dict = {}
+    with open(match_data, 'rb') as m:
+        next(m)
+        for line in m:
+            m = m.split()
+            
+    with gzip.open(qa_data, 'rb') as f:
+        next(f)
+        for line in f:
+            line = line.decode('UTF-8')
+            line = line.lower()
+            arr = line.split("\t")
+            sentid = arr[4]
+                
+
+
 def main():
     trainpath = "data/WikiQA/WikiQA-train.tsv.gz"
     first_pass = get_distinct_words_labels(trainpath)
