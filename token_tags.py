@@ -49,6 +49,7 @@ def match_tags(match_dict):
             comm_ids = [i.split(':')[0] for i in curr_caws]
             print(comm_ids)
             fetchObj = FetchRequest(communicationIds=comm_ids)
+            print(fetchObj)
             fr = fc.fetch(fetchObj)
             print("butts")
             print(fr.communications)
