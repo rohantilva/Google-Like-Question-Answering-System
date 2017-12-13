@@ -40,6 +40,7 @@ def match_tags(match_dict):
     with FetchCommunicationClientWrapper("ec2-35-153-184-225.compute-1.amazonaws.com", 9090) as fc:
         print("opened connection")
         comm_count = len(caw_info) #fc.getCommunicationCount()
+        #comm_count = fc.getCommunicationCount()
         start_count = 0
         end_count = min(50, comm_count - start_count)
         curr_caws = caw_info[start_count:end_count]
@@ -47,7 +48,6 @@ def match_tags(match_dict):
         comm_ids = [i.split(':')[0] for i in curr_caws]
         print(comm_ids)
         fetchObj = FetchRequest(communicationIds=comm_ids)
-        
         fr = fc.fetch(fetchObj)
         print("butts")
         print(fr.communications)
