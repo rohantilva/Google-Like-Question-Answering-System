@@ -3,6 +3,7 @@ from concrete.util.access_wrapper import FetchCommunicationClientWrapper
 from concrete import FetchRequest
 from concrete.util import get_tagged_tokens
 import gzip
+from collections import OrderedDict
 
 def qid_sid(dataset):
     with open(dataset, "rb") as f:
@@ -21,7 +22,6 @@ def match_dict(match):
         for line in f:
             line = line.decode('UTF-8')
             arr = line.split("\t")
-            print(arr)
             sid = arr[0]
             caw_info = arr[2]
             if caw_info not in sent_match.keys():
@@ -29,7 +29,8 @@ def match_dict(match):
             else:
                 sent_match[caw_info].append(sid)
                 #print(sent_match[caw_info])
-    return sent_match
+    s_match = OrderedDict(sorted(sent_match.items(), key=lambda i: i[0]))
+    return s_match
 
 
 def match_tags(match_dict):
@@ -39,29 +40,33 @@ def match_tags(match_dict):
     sid = list(sid)
     with FetchCommunicationClientWrapper("ec2-35-153-184-225.compute-1.amazonaws.com", 9090) as fc:
         print("opened connection")
-        comm_count = len(caw_info) #fc.getCommunicationCount()
-        #comm_count = fc.getCommunicationCount()
+        comm_count = len(caw_info)
         start_count = 0
-        end_count = min(50, comm_count - start_count)
-        curr_caws = caw_info[start_count:end_count]
-        print(curr_caws)
-        comm_ids = [i.split(':')[0] for i in curr_caws]
-        print(comm_ids)
-        fetchObj = FetchRequest(communicationIds=comm_ids)
-        fr = fc.fetch(fetchObj)
-        print("butts")
-        print(fr.communications)
-        for comm in fr.communications:
-            print(comm.id)
-            section = 0
-            for section in lun(comm.sectionList):
-                print(section)
-                for sentence in lun(section.sentenceList):
-                    for token_tag in get_tagged_tokens(sentence.tokenization, 'POS'):
-                        #print(token_tag)
-                        continue
-        start_count += 50
-        start_count = min(start_count, comm_count)
+        end_count = min(5, comm_count - start_count)
+        while end_count < comm_count:
+            curr_caws = caw_info[start_count:end_count]
+            end_count = min(5 + end_count, comm_count - start_count)
+            print(curr_caws)
+            comm_ids = [i.split(':')[0] for i in curr_caws]
+            print(comm_ids)
+            fetchObj = FetchRequest(communicationIds=comm_ids)
+            print(fetchObj)
+            fr = fc.fetch(fetchObj)
+            print(fr)
+            comm_num = 0
+            for comm in fr.communications:
+                print("butts")
+                info = curr_caws[comm_num].split(':')
+                section_num = info[1]
+                sent_num = info[2]
+                section = lun(comm.sectionList)[section_num]
+                sentence = lun(section.sentenceList)[sent_num]
+                print(sentence)
+                for token_tag in get_tagged_tokens(sentence.tokenization, 'POS'):
+                    print(token_tag)
+                comm_num += 1
+            start_count += 5
+            start_count = min(start_count, comm_count)
 
 def main():
     matches = match_dict("./data/WikiQA-match/train-match.tsv")
