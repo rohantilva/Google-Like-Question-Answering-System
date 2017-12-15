@@ -44,7 +44,7 @@ def match_tags(match_dict):
         start_count = 0
         end_count = min(5, comm_count - start_count)
         while end_count < comm_count:
-            curr_caws = caw_info[start_count:end_count]
+            curr_caws = caw_info[start_count:1]
             end_count = min(5 + end_count, comm_count - start_count)
             print(curr_caws)
             comm_ids = [i.split(':')[0] for i in curr_caws]
@@ -53,6 +53,7 @@ def match_tags(match_dict):
             print(fetchObj)
             fr = fc.fetch(fetchObj)
             print(fr)
+            print(fr.communications)
             comm_num = 0
             for comm in fr.communications:
                 print("butts")
@@ -67,7 +68,29 @@ def match_tags(match_dict):
                 comm_num += 1
             start_count += 5
             start_count = min(start_count, comm_count)
+            break
 
+
+def match_tags2(match_dict):
+    with FetchCommunicationClientWrapper("ec2-35-153-184-225.compute-1.amazonaws.com", 9090) as fc:
+        print("opened connection")
+        comm_count = fc.getCommunicationCount()
+        start_count = 0
+        while start_count != comm_count:
+            conn_comIDs = fc.getCommunicationIDs(
+                start_count, min(1, comm_count - start_count)
+            )
+            print(conn_comIDs)
+            fetchObj = FetchRequest(communicationIds=conn_comIDs)
+            fr = fc.fetch(fetchObj)
+            for comm in fr.communications:
+                print(comm.id)
+                for section in lun(comm.sectionList):
+                    for sentence in lun(section.sentenceList):
+                        for token_tag in get_tagged_tokens(sentence.tokenization, 'POS'):
+                            print(token_tag)
+            start_count += 50
+            start_count = min(start_count, comm_count)
 def main():
     matches = match_dict("./data/WikiQA-match/train-match.tsv")
     #print(matches)
