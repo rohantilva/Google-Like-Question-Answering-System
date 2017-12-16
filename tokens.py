@@ -3,8 +3,13 @@
 import nltk
 from nltk.corpus import wordnet
 from query_utils import stem
+from utils import SearchKDFT
 
-sentence = "Do large dogs quickly move?"
+#sentence = "Do large dogs quickly move?"
+#sentence = "What is the fastest land animal?"
+#sentence = "who runs the world"
+#sentence = "who is the point guard for the phoenix suns"
+sentence = "how are epithelial cells joined together?"
 sentence = stem(sentence)
 tokens = nltk.word_tokenize(sentence)
 tagged = nltk.pos_tag(tokens)
@@ -59,20 +64,37 @@ for tups in tagged:
                 break
 
 
-counter = 0
-print("verb modifications: ")
-for sentence in queries_verb:
-    print("sentence " + str(counter) + ": " + sentence)
-    counter += 1
+#counter = 0
+#print("verb modifications: ")
+#for sentence in queries_verb:
+#    print("sentence " + str(counter) + ": " + sentence)
+#    counter += 1
+#
+#counter = 0
+#print("adjective modifications: ")
+#for sentence in queries_adj:
+#    print("sentence " + str(counter) + ": " + sentence)
+#    counter += 1
+#
+#counter = 0
+#print("adverb modifications: ")
+#for sentence in queries_adv:
+#    print("sentence " + str(counter) + ": " + sentence)
+#    counter += 1
 
-counter = 0
-print("adjective modifications: ")
-for sentence in queries_adj:
-    print("sentence " + str(counter) + ": " + sentence)
-    counter += 1
+queries = list(set(queries_verb) | set(queries_adj) | set(queries_adv))
+print(queries)
+s = SearchKDFT()
+results = list()
+for query in queries:
+    result = s.search(query)
+    results.append(result)
 
-counter = 0
-print("adverb modifications: ")
-for sentence in queries_adv:
-    print("sentence " + str(counter) + ": " + sentence)
-    counter += 1
+
+results_uuid = list()
+for result in results:
+    for search_result in result.searchResultItems:
+        results_uuid.append(search_result.sentenceId.uuidString)
+
+print(results_uuid)
+print(len(results_uuid))

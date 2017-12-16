@@ -42,7 +42,11 @@ class SearchKDFT:
         string = string.replace("/"," ")
         string = string.replace("?","")
         terms = string.split(" ")
-        with SearchClientWrapper("172.19.0.4", 9090) as search_client:
+        with SearchClientWrapper("172.18.0.4", 9090) as search_client:
             handler = SearchHandler(search_client, "wikiQA", "", "")
             query1 = SearchQuery(type=SearchType.SENTENCES, terms=terms, k=500, rawQuery=string)
             return handler.search(query1)
+
+if __name__ =="__main__":
+    s = SearchKDFT()
+    s.search("hello")
