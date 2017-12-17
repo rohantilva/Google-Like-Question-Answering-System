@@ -3,16 +3,8 @@ from concrete.util.access_wrapper import FetchCommunicationClientWrapper
 from concrete import FetchRequest
 from concrete.util import get_tagged_tokens
 import gzip
+import pickle
 from collections import OrderedDict
-
-def qid_sid(dataset):
-    with open(dataset, "rb") as f:
-        next(f)
-        for line in f:
-            line = line.decode('UTF-8')
-            qid = arr[0]
-            sid = arr[4]
-    return
 
 
 def match_dict(match):
@@ -61,7 +53,8 @@ def match_tags(match_dict):
                 sentence = lun(section.sentenceList)[sent_num]
                 tokens = get_tokens(sentence.tokenization)
                 tags = get_tagged_tokens(sentence.tokenization, 'POS')
-                sid_to_tokens[sid[sid_count][0]] = tags
+                t = [i.tag.encode('UTF-8') for i in tags]
+                sid_to_tokens[sid[sid_count][0]] = t
                 comm_num += 1
                 sid_count += 1
             start_count += 5
@@ -75,8 +68,9 @@ def main():
     matches = match_dict("./data/WikiQA-match/train-match.tsv")
     #print(matches)
     print(len(matches.keys()))
-    match_tags(matches)
-
+    tags = match_tags(matches)
+    with open("./train_matches.p", "wb") as p:
+        pickle.dump(tags, p)
 
 if __name__ == '__main__':
     main()
