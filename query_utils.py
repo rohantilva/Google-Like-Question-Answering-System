@@ -1,7 +1,8 @@
 # utility file and utility function for stemmer (morphy)
 
-from nltk.corpus import wordnet as wn
+from nltk.corpus import wordnet
 import nltk
+from utils import SearchKDFT
 
 # stemming function constructs a new string with stemmed words (if possible).
 # Returns string with modified words.
@@ -9,7 +10,7 @@ def stem(query):
     s = ""
     query = query.split(" ")
     for word in query:
-        stem = wn.morphy(word)
+        stem = wordnet.morphy(word)
         s += ' ' + stem if stem is not None else ' ' + word
     return s
 
@@ -76,3 +77,5 @@ def return_search_results(sentence):
         results.append(result)
 
     return results
+
+print(return_search_results("Who is the greatest basketball player of all time?"))
