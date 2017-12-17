@@ -15,10 +15,12 @@ def stem(query):
     return s
 
 def return_search_results(sentence):
+    # common linking verbs
+    linking_verbs = ['am', 'be', 'are', 'wa', 'being']
     sentence = stem(sentence)
     tokens = nltk.word_tokenize(sentence)
     tagged = nltk.pos_tag(tokens)
-    
+     
     queries_verb = []
     queries_adj = []
     queries_adv = []
@@ -32,15 +34,16 @@ def return_search_results(sentence):
     for tups in tagged:
         if tups[1].startswith('V'):
             word = tups[0]
-            syns = wordnet.synsets(word, pos=wordnet.VERB)
-            for syn in syns:
-                for l in syn.lemmas():
-                    if l.name() != word:
-                        new_sentence = sentence.replace(word, l.name())
+            if word not in linking_verbs:
+                syns = wordnet.synsets(word, pos=wordnet.VERB)
+                for syn in syns:
+                    for l in syn.lemmas():
+                        if l.name() != word:
+                            new_sentence = sentence.replace(word, l.name())
                             #if new_sentence not in queries:
-                        queries_verb.append(new_sentence)
-                if len(queries_verb) >= 11:
-                    break
+                            queries_verb.append(new_sentence)
+                    if len(queries_verb) >= 11:
+                        break
     
     for tups in tagged:
         if tups[1] == 'JJ':
@@ -69,13 +72,18 @@ def return_search_results(sentence):
                     break
     
     queries = list(set(queries_verb) | set(queries_adj) | set(queries_adv))
-    print(queries)
+    print('queries are' + str(queries))
     s = SearchKDFT()
     results = list()
     for query in queries:
         result = s.search(query)
-        results.append(result)
+        print(result)
+        print()
+        print()
+#        results.append(result)
 
+        
     return results
 
-print(return_search_results("Who is the greatest basketball player of all time?"))
+
+return_search_results("Who is the best basketball player?")

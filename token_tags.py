@@ -54,7 +54,7 @@ def match_tags(match_dict):
             print(comm_ids.keys())
             fetchObj = FetchRequest(communicationIds=list(comm_ids.keys()))
             fr = fc.fetch(fetchObj)
-            print(fr.communications)
+            print(fr)
             with open("testing.p", "wb") as p:
                 pickle.dump(fr.communications, p)
             return
