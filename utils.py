@@ -46,3 +46,7 @@ class SearchKDFT:
             handler = SearchHandler(search_client, "wikiQA", "", "")
             query1 = SearchQuery(type=SearchType.SENTENCES, terms=terms, k=500, rawQuery=string)
             return handler.search(query1)
+
+if __name__ == "__main__":
+    s = SearchKDFT()
+    s.search("hello")
