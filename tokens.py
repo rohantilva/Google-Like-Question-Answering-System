@@ -9,7 +9,8 @@ from utils import SearchKDFT
 #sentence = "What is the fastest land animal?"
 #sentence = "who runs the world"
 #sentence = "who is the point guard for the phoenix suns"
-sentence = "how are epithelial cells joined together?"
+#sentence = "how are epithelial cells joined together?"
+sentence = input("Enter a query: ")
 sentence = stem(sentence)
 tokens = nltk.word_tokenize(sentence)
 tagged = nltk.pos_tag(tokens)
@@ -90,11 +91,4 @@ for query in queries:
     result = s.search(query)
     results.append(result)
 
-
-results_uuid = list()
-for result in results:
-    for search_result in result.searchResultItems:
-        results_uuid.append(search_result.sentenceId.uuidString)
-
-print(results_uuid)
-print(len(results_uuid))
+print(results)
