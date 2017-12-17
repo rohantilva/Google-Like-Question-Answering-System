@@ -36,30 +36,48 @@ def match_tags(match_dict):
         print("opened connection")
         comm_count = len(caw_info)
         start_count = 0
-        end_count = 5
+        end_count = 25
         sid_count = 0
         while end_count < comm_count:
-            curr_caws = caw_info[start_count:end_count]
-            comm_ids = [i.split(':')[0] for i in curr_caws]
-            print(comm_ids)
-            fetchObj = FetchRequest(communicationIds=comm_ids)
+            curr_caws = caw_info[10:11]
+            print(curr_caws)
+            comm_ids = {}
+            for c in curr_caws:
+                c = c.split(':')
+                comm_id = c[0]
+                section_num = int(c[1])
+                sent_num = int(c[2])
+                if comm_id not in comm_ids.keys():
+                    comm_ids[comm_id] = [[section_num, sent_num]]
+                else:
+                    comm_ids[comm_id].append([section_num, sent_num])
+            print(comm_ids.keys())
+            fetchObj = FetchRequest(communicationIds=list(comm_ids.keys()))
             fr = fc.fetch(fetchObj)
-            comm_num = 0 
+            print(fr.communications)
+            with open("testing.p", "wb") as p:
+                pickle.dump(fr.communications, p)
+            return
             for comm in fr.communications:
-                info = curr_caws[comm_num].split(':')
-                section_num = int(info[1])
-                sent_num = int(info[2])
-                section = lun(comm.sectionList)[section_num]
-                sentence = lun(section.sentenceList)[sent_num]
-                tokens = get_tokens(sentence.tokenization)
-                tags = get_tagged_tokens(sentence.tokenization, 'POS')
-                t = [i.tag.encode('UTF-8') for i in tags]
-                sid_to_tokens[sid[sid_count][0]] = t
-                comm_num += 1
-                sid_count += 1
-            start_count += 5
+                for i in range(len(comm_ids[comm])):
+                    section_num = comm_ids[comm][i][0]
+                    sent_num = comm_ids[com][i][1]
+                    if section_num < len(lun(comm.sectionList)):
+                        section = lun(comm.sectionList)[section_num]
+                    else:
+                        continue
+                    if sent_num < len(lun(section.sentenceList)):
+                        sentence = lun(section.sentenceList)[sent_num]
+                    else:
+                        continue
+                    tokens = get_tokens(sentence.tokenization)
+                    tags = get_tagged_tokens(sentence.tokenization, 'POS')
+                    t = [i.tag.encode('UTF-8') for i in tags]
+                    sid_to_tokens[sid[sid_count][0]] = t
+                    sid_count += 1
+            start_count += 25
             start_count = min(start_count, comm_count)
-            end_count = min(start_count + 5, comm_count -1)
+            end_count = min(start_count + 25, comm_count -1)
             print(sid_to_tokens)
     return(sid_to_tokens)
 
