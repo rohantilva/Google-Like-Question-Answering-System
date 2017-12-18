@@ -1,15 +1,12 @@
+from sklearn.metrics.pairwise import cosine_similarity
+import spacy
+import numpy as np
+from numpy import array
+from numpy import matrix
+
 class WordEmbeddings:
     def __init__(self):
-        from sklearn.metrics.pairwise import cosine_similarity
-        import spacy
-        import numpy as np
-        from numpy import array
-        from numpy import matrix
         self.nlp = spacy.load('en')
-        self.cosine = cosine_similarity
-        self.array = array
-        self.matrix = matrix
-        self.np = np
 
     def getDetVal(self, query, answer):
         # query = query.replace(","," ")
