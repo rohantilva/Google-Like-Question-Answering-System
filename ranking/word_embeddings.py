@@ -62,9 +62,3 @@ class WordEmbeddings:
         vector1 = self.array(vector1).reshape(1, -1)
         vector2 = self.array(vector2).reshape(1, -1)
         return self.cosine(vector1, vector2)[0][0]
-
-# wordEm = WordEmbeddings()
-# print(wordEm.getDetVal("hello world", "hello one of us"))
-# print(wordEm.getDetVal("hello world", "hello world"))  
-# print(wordEm.getSumVal("hello world", "hello one of us")) 
-# print(wordEm.getSumVal("hello world", "hello world"))
