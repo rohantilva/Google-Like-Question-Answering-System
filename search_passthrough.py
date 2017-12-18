@@ -5,10 +5,10 @@ import logging
 
 from concrete import AnnotationMetadata, ServiceInfo
 from concrete.search import SearchService
-from concrete.search.ttypes import SearchResult, SearchCapability, SearchType
+from concrete.search.ttypes import SearchResult, SearchCapability, SearchType, SearchQuery
 from concrete.services.ttypes import ServicesException
 from concrete.util import AnalyticUUIDGeneratorFactory, SearchServiceWrapper, SearchClientWrapper
-
+from query_int import return_search_results
 
 class SearchHandler(SearchService.Iface):
     def __init__(self, other, corpus_name, host, port):
@@ -30,7 +30,29 @@ class SearchHandler(SearchService.Iface):
         raise [self.corpus_name]
 
     def search(self, query):
-        return self.other.search(query)
+        augf = AnalyticUUIDGeneratorFactory()
+        aug = augf.create()
+        results = []
+        for query1 in return_search_results(query.rawQuery):
+            query1 = SearchQuery(type=SearchType.SENTENCES, terms = query1.split(" "), rawQuery = query1, k=500)
+            result = self.other.search(query1)
+            # logging.info(result.searchResultItems)
+            results.extend(result.searchResultItems)
+        # results = SearchResult(searchResultItems=results, searchQuery=query)
+        # logging.info(len(results))
+        resultsDict = {}
+        for result in results:
+            resultsDict[result.sentenceId.uuidString] = result
+        results = []
+        for key in resultsDict:
+            results.append(resultsDict[key])
+        return SearchResult(uuid=aug.next(),
+                            searchQuery=query,
+                            searchResultItems=results,
+                            metadata=AnnotationMetadata(
+                                tool="search",
+                                timestamp=int(time.time())),
+                            lang="eng")
         # augf = AnalyticUUIDGeneratorFactory()
         # aug = augf.create()
         # with SearchClientWrapper(self.host, self.port) as sc:
@@ -49,13 +71,16 @@ if __name__ == "__main__":
 
     logging.basicConfig(format='%(asctime)-15s %(levelname)s: %(message)s',
                         level='DEBUG')
-    
     # time.sleep(10000)
-    with SearchClientWrapper("search", "9090") as search_client:
-        handler = SearchHandler(search_client, "wikiQA", "", "")
-    #handler = SearchHandler(None, "wikiQA", args.search_host, args.search_port)
-    
-        server = SearchServiceWrapper(handler)
+    while True:
+        try:
+            with SearchClientWrapper("search", "9090") as search_client:
+                handler = SearchHandler(search_client, "wikiQA", "", "")
+                # handler = SearchHandler(None, "wikiQA", args.search_host, args.search_port)
+                server = SearchServiceWrapper(handler)
 
-        logging.info('Starting the server...')
-        server.serve(args.host, args.port)
+                logging.info('Starting the server...')
+                server.serve(args.host, args.port)
+                break
+        except:
+            pass

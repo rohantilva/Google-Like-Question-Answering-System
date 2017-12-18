@@ -2,9 +2,10 @@
 FROM python:3
 
 RUN pip install concrete==4.13.3
-
+RUN pip install nltk
+RUN python -m nltk.downloader -d /usr/local/share/nltk_data all
 ADD search_passthrough.py /opt/
-
+ADD query_int.py /opt/
 WORKDIR /opt
 
 ENTRYPOINT ["python", "search_passthrough.py"]
