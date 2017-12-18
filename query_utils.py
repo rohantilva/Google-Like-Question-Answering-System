@@ -1,5 +1,7 @@
 # utility file and utility function for stemmer (morphy)
-
+from concrete.util import lun, get_tokens
+from concrete.util.access_wrapper import FetchCommunicationClientWrapper
+from concrete import FetchRequest
 from nltk.corpus import wordnet
 import nltk
 from utils import SearchKDFT
@@ -72,6 +74,7 @@ def return_search_results(sentence):
                     break
     
     queries = list(set(queries_verb) | set(queries_adj) | set(queries_adv))
+    queries.append(sentence)
     print('queries are' + str(queries))
     s = SearchKDFT()
     results = list()
@@ -85,5 +88,45 @@ def return_search_results(sentence):
         
     return results
 
+def get_comm_ids(results):
+    comm_ids_list = list()
+    #for result in results:
+        
 
-return_search_results("Who is the best basketball player?")
+def fetch_large_dataset():
+    with FetchCommunicationClientWrapper("ec2-35-153-184-225.compute-1.amazonaws.com", 9090) as fc:
+        comm_count = fc.getCommunicationCount()
+        start_count = 0
+        conn_comIDs = fc.getCommunicationIDs(start_count, 1)
+        fetchObj = FetchRequest(communicationIds=conn_comIDs)
+        fr = fc.fetch(fetchObj)
+        for comm in fr.communications:
+            for section in lun(comm.sectionList):
+                for sentence in lun(section.sentenceList):
+                    print(sentence.uuid.uuidString)
+                    print(comm.text[sentence.textSpan.start:sentence.textSpan.ending])
+                    # if sentence.uuid.uuidString == sentence_uuid_string:
+
+#            for section in lun(comm.sectionList):
+#                for sentence in lun(section.sentenceList):
+#                    print(sentence)
+#                    print()
+        #while start_count != comm_count:
+        #    conn_comIDs = fc.getCommunicationIDs(
+        #        start_count, min(50, comm_count - start_count)
+        #    )
+        #    fetchObj = FetchRequest(communicationIds=conn_comIDs)
+        #    fr = fc.fetch(fetchObj)
+        #    for comm in fr.communications:
+        #        print(comm.id)
+        #        for section in lun(comm.sectionList):
+        #            for sentence in lun(section.sentenceList):
+        #                for token in get_tokens(sentence.tokenization):
+        #                    print(token)
+        #    start_count += 50
+        #    start_count = min(start)
+
+
+results = return_search_results("Who is the point guard for the Cleveland Cavaliers?")
+get_comm_ids(results)
+fetch_large_dataset()

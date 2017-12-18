@@ -14,15 +14,15 @@ def match_dict(match):
         for line in f:
             line = line.decode('UTF-8')
             arr = line.split("\t")
-            sid = str(arr[0])
-            caw_info = arr[2].encode('UTF-8')
+            sid = arr[0]
+            caw_info = arr[2]
+            print(caw_info)
             if caw_info not in sent_match.keys():
                 sent_match[caw_info] = [sid]
             else:
                 sent_match[caw_info].append(sid)
                 #print(sent_match[caw_info])
     s_match = OrderedDict(sorted(sent_match.items(), key=lambda i: i[0]))
-    print(s_match)
     return s_match
 
 
@@ -39,6 +39,7 @@ def match_tags(match_dict):
         end_count = 25
         sid_count = 0
         while end_count < comm_count:
+<<<<<<< HEAD
             curr_caws = caw_info[10:11]
             print(curr_caws)
             comm_ids = {}
@@ -53,12 +54,18 @@ def match_tags(match_dict):
                     comm_ids[comm_id].append([section_num, sent_num])
             print(comm_ids.keys())
             fetchObj = FetchRequest(communicationIds=list(comm_ids.keys()))
+=======
+            curr_caws = caw_info[start_count:end_count]
+            comm_ids = [i.split(':')[0] for i in curr_caws]
+            fetchObj = FetchRequest(communicationIds=comm_ids)
+>>>>>>> 5b96c39edb7aafa1d25d279794fc33831e1e9e44
             fr = fc.fetch(fetchObj)
             print(fr)
             with open("testing.p", "wb") as p:
                 pickle.dump(fr.communications, p)
             return
             for comm in fr.communications:
+<<<<<<< HEAD
                 for i in range(len(comm_ids[comm])):
                     section_num = comm_ids[comm][i][0]
                     sent_num = comm_ids[com][i][1]
@@ -79,6 +86,27 @@ def match_tags(match_dict):
             start_count = min(start_count, comm_count)
             end_count = min(start_count + 25, comm_count -1)
             print(sid_to_tokens)
+=======
+                info = curr_caws[comm_num].split(':')
+                section_num = int(info[1])
+                sent_num = int(info[2])
+                if section_num < len(lun(comm.sectionList)):
+                    section = lun(comm.sectionList)[section_num]
+                else:
+                    continue
+                if sent_num < len(lun(section.sentenceList)):
+                    sentence = lun(section.sentenceList)[sent_num]
+                else:
+                    continue
+                tags = get_tagged_tokens(sentence.tokenization, 'POS')
+                t = [i.tag.encode('UTF-8') for i in tags]
+                sid_to_tokens[sid[sid_count][0]] = t
+                comm_num += 1
+                sid_count += 1
+            start_count += 5
+            start_count = min(start_count, comm_count)
+            end_count = min(start_count + 5, comm_count -1)
+>>>>>>> 5b96c39edb7aafa1d25d279794fc33831e1e9e44
     return(sid_to_tokens)
 
 
