@@ -85,12 +85,12 @@ def return_search_results(sentence):
         print()
         results.append(result)
 
-    for sr in results:
-        for sri in sr.searchResultItems:
-            print(sri.tokens)
-            
     return results
 
+def get_comm_ids(results):
+    comm_ids_list = list()
+    for result in results:
+        
 
 def fetch_large_dataset():
     with FetchCommunicationClientWrapper("ec2-35-153-184-225.compute-1.amazonaws.com", 9090) as fc:
@@ -100,7 +100,12 @@ def fetch_large_dataset():
         fetchObj = FetchRequest(communicationIds=conn_comIDs)
         fr = fc.fetch(fetchObj)
         for comm in fr.communications:
-            print(comm)
+            for section in lun(comm.sectionList):
+                for sentence in lun(section.sentenceList):
+                    print(sentence.uuid.uuidString)
+                    print(comm.text[sentence.textSpan.start:sentence.textSpan.ending])
+                    # if sentence.uuid.uuidString == sentence_uuid_string:
+
 #            for section in lun(comm.sectionList):
 #                for sentence in lun(section.sentenceList):
 #                    print(sentence)
@@ -121,5 +126,6 @@ def fetch_large_dataset():
         #    start_count = min(start)
 
 
-#return_search_results("Who is the best person?")
+results = return_search_results("Who is the point guard for the Cleveland Cavaliers?")
+get_comm_ids(results)
 fetch_large_dataset()
