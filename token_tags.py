@@ -14,15 +14,15 @@ def match_dict(match):
         for line in f:
             line = line.decode('UTF-8')
             arr = line.split("\t")
-            sid = str(arr[0])
-            caw_info = arr[2].encode('UTF-8')
+            sid = arr[0]
+            caw_info = arr[2]
+            print(caw_info)
             if caw_info not in sent_match.keys():
                 sent_match[caw_info] = [sid]
             else:
                 sent_match[caw_info].append(sid)
                 #print(sent_match[caw_info])
     s_match = OrderedDict(sorted(sent_match.items(), key=lambda i: i[0]))
-    print(s_match)
     return s_match
 
 
@@ -41,7 +41,6 @@ def match_tags(match_dict):
         while end_count < comm_count:
             curr_caws = caw_info[start_count:end_count]
             comm_ids = [i.split(':')[0] for i in curr_caws]
-            print(comm_ids)
             fetchObj = FetchRequest(communicationIds=comm_ids)
             fr = fc.fetch(fetchObj)
             comm_num = 0 
@@ -49,9 +48,14 @@ def match_tags(match_dict):
                 info = curr_caws[comm_num].split(':')
                 section_num = int(info[1])
                 sent_num = int(info[2])
-                section = lun(comm.sectionList)[section_num]
-                sentence = lun(section.sentenceList)[sent_num]
-                tokens = get_tokens(sentence.tokenization)
+                if section_num < len(lun(comm.sectionList)):
+                    section = lun(comm.sectionList)[section_num]
+                else:
+                    continue
+                if sent_num < len(lun(section.sentenceList)):
+                    sentence = lun(section.sentenceList)[sent_num]
+                else:
+                    continue
                 tags = get_tagged_tokens(sentence.tokenization, 'POS')
                 t = [i.tag.encode('UTF-8') for i in tags]
                 sid_to_tokens[sid[sid_count][0]] = t
@@ -60,7 +64,6 @@ def match_tags(match_dict):
             start_count += 5
             start_count = min(start_count, comm_count)
             end_count = min(start_count + 5, comm_count -1)
-            print(sid_to_tokens)
     return(sid_to_tokens)
 
 
