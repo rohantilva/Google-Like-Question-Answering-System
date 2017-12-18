@@ -5,6 +5,7 @@ from concrete import FetchRequest
 from nltk.corpus import wordnet
 import nltk
 from utils import SearchKDFT
+import collections
 
 # stemming function constructs a new string with stemmed words (if possible).
 # Returns string with modified words.
@@ -80,53 +81,43 @@ def return_search_results(sentence):
     results = list()
     for query in queries:
         result = s.search(query)
-        print(result)
-        print()
-        print()
-#        results.append(result)
-
+        results.append(result)
         
     return results
 
 def get_comm_ids(results):
     comm_ids_list = list()
-    #for result in results:
-        
+    temp = collections.OrderedDict()
+    for search_result in results:
+        for search_result_item in search_result.searchResultItems:
+            temp[search_result_item.sentenceId.uuidString] = search_result_item.communicationId
+            comm_ids_list.append(str(search_result_item.communicationId))
+    return comm_ids_list, temp
 
-def fetch_large_dataset():
+def fetch_dataset(comm_ids, dict_uuid_commID):
     with FetchCommunicationClientWrapper("ec2-35-153-184-225.compute-1.amazonaws.com", 9090) as fc:
-        comm_count = fc.getCommunicationCount()
-        start_count = 0
-        conn_comIDs = fc.getCommunicationIDs(start_count, 1)
-        fetchObj = FetchRequest(communicationIds=conn_comIDs)
+        #comm_count = fc.getCommunicationCount()
+        #start_count = 0
+        #conn_comIDs = fc.getCommunicationIDs(2, 3)
+        #print(conn_comIDs)
+        print(comm_ids)
+        fetchObj = FetchRequest(communicationIds=comm_ids)
         fr = fc.fetch(fetchObj)
+        counter = 0
         for comm in fr.communications:
+            sentence_dict = dict()
             for section in lun(comm.sectionList):
                 for sentence in lun(section.sentenceList):
-                    print(sentence.uuid.uuidString)
-                    print(comm.text[sentence.textSpan.start:sentence.textSpan.ending])
-                    # if sentence.uuid.uuidString == sentence_uuid_string:
+                    if sentence.uuid.uuidString in dict_uuid_commID.keys():
+                        print(sentence.uuid.uuidString)
+                        print(comm.text[sentence.textSpan.start:sentence.textSpan.ending])
+                        dict_uuid_commID[sentence.uuid.uuidString] = comm.text[sentence.textSpan.start:sentence.textSpan.ending]
+                    #sentence_dict[sentence.uuid.uuidString] = comm.text[sentence.textSpan.start:sentence.textSpan.ending]
+            #comm_dict[comm_ids[counter]] = sentence_dict
 
-#            for section in lun(comm.sectionList):
-#                for sentence in lun(section.sentenceList):
-#                    print(sentence)
-#                    print()
-        #while start_count != comm_count:
-        #    conn_comIDs = fc.getCommunicationIDs(
-        #        start_count, min(50, comm_count - start_count)
-        #    )
-        #    fetchObj = FetchRequest(communicationIds=conn_comIDs)
-        #    fr = fc.fetch(fetchObj)
-        #    for comm in fr.communications:
-        #        print(comm.id)
-        #        for section in lun(comm.sectionList):
-        #            for sentence in lun(section.sentenceList):
-        #                for token in get_tokens(sentence.tokenization):
-        #                    print(token)
-        #    start_count += 50
-        #    start_count = min(start)
-
+    print(dict_uuid_commID)
+    inv_map = {v: k for k, v in dict_uuid_commID.items()}
 
 results = return_search_results("Who is the point guard for the Cleveland Cavaliers?")
-get_comm_ids(results)
-fetch_large_dataset()
+comm_ids, dict_uuid_commID = get_comm_ids(results)
+fetch_dataset(comm_ids, dict_uuid_commID)
