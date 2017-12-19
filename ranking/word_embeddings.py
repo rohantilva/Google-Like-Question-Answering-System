@@ -84,7 +84,7 @@ class WordEmbeddings:
                 alpha = re.compile('[^0-9a-zA-Z]')
                 q = alpha.sub(' ', str(arr[1]))
                 a = alpha.sub(' ', str(arr[5]))
-                sum__vals.append(self.__getSumVal(q, a))
+                sum_vals.append(self.__getSumVal(q, a))
         return np.asarray(sum_vals)
 
 
