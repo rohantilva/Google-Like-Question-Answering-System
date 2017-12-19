@@ -65,7 +65,7 @@ def train_model_SVM(train_data, dev_data, num_resamples=5):
     scaler.fit(det)
     s = x_dev[:, 3].reshape(-1, 1)
     scaler.fit(s)
-    vec1 = scaler.transform(s).flatten()
+    vec1 = scaler.transform(det).flatten()
     vec2 = scaler.transform(s).flatten()
     x_dev[:, 2] = vec1
     x_dev[:, 3] = vec2
@@ -77,8 +77,8 @@ def train_model_SVM(train_data, dev_data, num_resamples=5):
     best_r = 0
     f1_scores = []
     best_model = LinearSVC()
-    x_train = x_train[:, 1].reshape(-1, 1)
-    x_dev = x_dev[:, 1].reshape(-1, 1)
+    # x_train = x_train[:, 1].reshape(-1, 1)
+    # x_dev = x_dev[:, 1].reshape(-1, 1)
     while (C <= 1e7):
         for sample_num in range(num_resamples):
             model = LinearSVC(C=C)
@@ -134,7 +134,7 @@ def train_MLP(train_data, dev_data, num_resamples=5):
     scaler.fit(det)
     s = x_dev[:, 3].reshape(-1, 1)
     scaler.fit(s)
-    vec1 = scaler.transform(s).flatten()
+    vec1 = scaler.transform(det).flatten()
     vec2 = scaler.transform(s).flatten()
     x_dev[:, 2] = vec1
     x_dev[:, 3] = vec2
@@ -146,8 +146,8 @@ def train_MLP(train_data, dev_data, num_resamples=5):
     best_r = 0
     f1_scores = []
     best_model = MLPClassifier()
-    x_train = x_train[:, 1].reshape(-1, 1)
-    x_dev = x_dev[:, 1].reshape(-1, 1)
+    # x_train = x_train[:, 1].reshape(-1, 1)
+    # x_dev = x_dev[:, 1].reshape(-1, 1)
     while (C <= 1e7):
         model = MLPClassifier(solver='lbfgs', alpha=C, random_state=1)
         for sample_num in range(num_resamples):
