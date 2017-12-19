@@ -58,7 +58,11 @@ class WordEmbeddings:
         vector2 = array(vector2).reshape(1, -1)
         return cosine(vector1, vector2)[0][0]
 
-    
+    def __getSpacySim(self, query, answer):
+        terms1 = self.nlp(query)
+        terms2 = self.nlp(answer)
+        return terms1.similarity(terms2)
+
     def get_det_val_dataset(self, dataset):
         det_vals = []
         with gzip.open(dataset, 'rb') as f:
@@ -72,15 +76,15 @@ class WordEmbeddings:
                 a = alpha.sub(' ', str(arr[5]))
                 det_vals.append(self.__getDetVal(q, a))
         return np.asarray(det_vals)
-    
-    
+
+
     def get_det_vals_run(self, data):
         det_vals = []
-        for pair in data():
+        for pair in data:
             det_vals.append(self.__getDetVal(pair[0], pair[1]))
         return np.asarray(det_vals)
 
-    
+
     def get_sum_vals_dataset(self, dataset):
         sum_vals = []
         with gzip.open(dataset, 'rb') as f:
@@ -98,9 +102,27 @@ class WordEmbeddings:
 
     def get_sum_vals_run(self, data):
         sum_vals = []
-        for pair in data():
+        for pair in data:
             sum_vals.append(self.__getSumVal(pair[0], pair[1]))
         return np.asarray(sum_vals)
 
-    
+    def get_spacy_sim_dataset(self, dataset):
+        sim_vals = []
+        with gzip.open(dataset, 'rb') as f:
+            next(f)
+            for line in f:
+                line = line.decode('UTF-8')
+                line = line.lower()
+                arr = line.split("\t")
+                alpha = re.compile('[^0-9a-zA-Z]')
+                q = alpha.sub(' ', str(arr[1]))
+                a = alpha.sub(' ', str(arr[5]))
+                sim_vals.append(self.__getSpacySim(q, a))
+        return np.asarray(sim_vals)
 
+
+    def get_spacy_sim_run(self, data):
+        sim_vals = []
+        for pair in data:
+            sim_vals.append(self.__getSpacySim(pair[0], pair[1]))
+        return np.asarray(det_vals)
