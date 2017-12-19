@@ -76,7 +76,7 @@ class WordEmbeddings:
     
     def get_det_vals_run(self, data):
         det_vals = []
-        for pair in data():
+        for pair in data:
             det_vals.append(self.__getDetVal(pair[0], pair[1]))
         return np.asarray(det_vals)
 
@@ -98,7 +98,7 @@ class WordEmbeddings:
 
     def get_sum_vals_run(self, data):
         sum_vals = []
-        for pair in data():
+        for pair in data:
             sum_vals.append(self.__getSumVal(pair[0], pair[1]))
         return np.asarray(sum_vals)
 
