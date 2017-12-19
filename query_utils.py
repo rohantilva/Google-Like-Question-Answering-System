@@ -1,4 +1,3 @@
-# utility file and utility function for stemmer (morphy)
 from concrete.util import lun, get_tokens
 from concrete.util.access_wrapper import FetchCommunicationClientWrapper
 from concrete import FetchRequest
@@ -9,16 +8,16 @@ import collections
 
 # stemming function constructs a new string with stemmed words (if possible).
 # Returns string with modified words.
-def stem(query):
+'''def stem(query):
     s = ""
     query = query.split(" ")
     for word in query:
         stem = wordnet.morphy(word)
         s += ' ' + stem if stem is not None else ' ' + word
-    return s
+    return s'''
 
 def return_search_results(sentence):
-    # common linking verbs
+'''    # common linking verbs
     linking_verbs = ['am', 'be', 'are', 'wa', 'being']
     sentence = stem(sentence)
     tokens = nltk.word_tokenize(sentence)
@@ -75,6 +74,8 @@ def return_search_results(sentence):
                     break
     
     queries = list(set(queries_verb) | set(queries_adj) | set(queries_adv))
+    queries.append(sentence)'''
+    queries = []
     queries.append(sentence)
     print('queries are' + str(queries))
     s = SearchKDFT()
@@ -95,25 +96,20 @@ def get_comm_ids(results):
     return comm_ids_list, temp
 
 def fetch_dataset(comm_ids, dict_uuid_commID):
-    with FetchCommunicationClientWrapper("ec2-35-153-184-225.compute-1.amazonaws.com", 9090) as fc:
-        #comm_count = fc.getCommunicationCount()
-        #start_count = 0
-        #conn_comIDs = fc.getCommunicationIDs(2, 3)
-        #print(conn_comIDs)
-        print(comm_ids)
+    with FetchCommunicationClientWrapper("172.18.0.2", 9090) as fc:
+#        print(comm_ids)
         fetchObj = FetchRequest(communicationIds=comm_ids)
+        print("check1")
+        print(fetchObj)
         fr = fc.fetch(fetchObj)
-        counter = 0
+        print("pleaseeeeee")
         for comm in fr.communications:
-            sentence_dict = dict()
             for section in lun(comm.sectionList):
                 for sentence in lun(section.sentenceList):
                     if sentence.uuid.uuidString in dict_uuid_commID.keys():
                         print(sentence.uuid.uuidString)
                         print(comm.text[sentence.textSpan.start:sentence.textSpan.ending])
                         dict_uuid_commID[sentence.uuid.uuidString] = comm.text[sentence.textSpan.start:sentence.textSpan.ending]
-                    #sentence_dict[sentence.uuid.uuidString] = comm.text[sentence.textSpan.start:sentence.textSpan.ending]
-            #comm_dict[comm_ids[counter]] = sentence_dict
 
     print(dict_uuid_commID)
     inv_map = {v: k for k, v in dict_uuid_commID.items()}

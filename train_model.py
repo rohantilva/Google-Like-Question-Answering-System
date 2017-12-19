@@ -107,6 +107,9 @@ def train_MLP(train_data, dev_data, num_resamples=5):
     print(best_r)
     print(curr_best_C)
     sorted_indices = np.argsort(best_prob[:, 1])
+    indices_to_sentences = pickle.load(open("./sentences.p", "rb")) # {0: "my name is Rohan", 1: "my name is matt"}
+    for i in range(len(sorted_indices)):
+        
     
 #    print(best_prob)
 
