@@ -18,7 +18,7 @@ def stem(query):
 
 def return_search_results(sentence):
     # common linking verbs
-    linking_verbs = ['am', 'be', 'are', 'wa', 'being']
+    linking_verbs = ['am', 'be', 'are', 'was', 'being']
     sentence = stem(sentence)
     tokens = nltk.word_tokenize(sentence)
     tagged = nltk.pos_tag(tokens)

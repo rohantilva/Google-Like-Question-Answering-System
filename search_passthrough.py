@@ -3,12 +3,14 @@
 import time
 import logging
 
-from concrete import AnnotationMetadata, ServiceInfo
+from concrete import AnnotationMetadata, ServiceInfo, FetchRequest
 from concrete.search import SearchService
 from concrete.search.ttypes import SearchResult, SearchCapability, SearchType, SearchQuery
 from concrete.services.ttypes import ServicesException
 from concrete.util import AnalyticUUIDGeneratorFactory, SearchServiceWrapper, SearchClientWrapper
 from query_int import return_search_results
+from concrete.util.access_wrapper import FetchCommunicationClientWrapper
+import collections
 
 class SearchHandler(SearchService.Iface):
     def __init__(self, other, corpus_name, host, port):
@@ -46,6 +48,8 @@ class SearchHandler(SearchService.Iface):
         results = []
         for key in resultsDict:
             results.append(resultsDict[key])
+        # comm_ids_list, temp = get_comm_ids(results)
+        # logging.info(fetch_dataset(comm_ids_list, temp))
         return SearchResult(uuid=aug.next(),
                             searchQuery=query,
                             searchResultItems=results,
@@ -58,6 +62,37 @@ class SearchHandler(SearchService.Iface):
         # with SearchClientWrapper(self.host, self.port) as sc:
             # return sc.search(query)
 
+def get_comm_ids(results):
+    comm_ids_list = list()
+    temp = collections.OrderedDict()
+    for search_result_item in results:
+        temp[search_result_item.sentenceId.uuidString] = search_result_item.communicationId
+        comm_ids_list.append(str(search_result_item.communicationId))
+    return comm_ids_list, temp
+
+def fetch_dataset(comm_ids, dict_uuid_commID):
+    with FetchCommunicationClientWrapper("fetch", 9090) as fc:
+        #comm_count = fc.getCommunicationCount()
+        #start_count = 0
+        #conn_comIDs = fc.getCommunicationIDs(2, 3)
+        #print(conn_comIDs)
+        print(comm_ids)
+        fetchObj = FetchRequest(communicationIds=comm_ids)
+        fr = fc.fetch(fetchObj)
+        counter = 0
+        for comm in fr.communications:
+            sentence_dict = dict()
+            for section in lun(comm.sectionList):
+                for sentence in lun(section.sentenceList):
+                    if sentence.uuid.uuidString in dict_uuid_commID.keys():
+                        print(sentence.uuid.uuidString)
+                        print(comm.text[sentence.textSpan.start:sentence.textSpan.ending])
+                        dict_uuid_commID[sentence.uuid.uuidString] = comm.text[sentence.textSpan.start:sentence.textSpan.ending]
+                    #sentence_dict[sentence.uuid.uuidString] = comm.text[sentence.textSpan.start:sentence.textSpan.ending]
+            #comm_dict[comm_ids[counter]] = sentence_dict
+
+    print(dict_uuid_commID)
+    inv_map = {v: k for k, v in dict_uuid_commID.items()}
 
 if __name__ == "__main__":
     from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
