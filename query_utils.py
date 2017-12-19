@@ -26,8 +26,10 @@ def get_comm_ids(results):
     return comm_ids_list, temp
 
 def fetch_dataset(comm_ids, dict_uuid_commID):
-    with FetchCommunicationClientWrapper("172.18.0.2", 9090) as fc:
+#    with FetchCommunicationClientWrapper("172.18.0.2", 9090) as fc:
+    with FetchCommunicationClientWrapper("ec2-52-90-242-175.compute-1.amazonaws.com", 9090) as fc:
         num_comms = len(comm_ids)
+        print(num_comms)
         total = 0
         while (total < num_comms):
             if (num_comms - total >= 10):
@@ -36,7 +38,6 @@ def fetch_dataset(comm_ids, dict_uuid_commID):
             else:
                 fetchObj = FetchRequest(communicationIds=comm_ids[total:num_comms-total])
                 total += num_comms - total
-#        print("check1")
             print(fetchObj)
             fr = fc.fetch(fetchObj)
             for comm in fr.communications:
