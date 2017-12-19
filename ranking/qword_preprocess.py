@@ -26,7 +26,7 @@ class QwordPreprocess:
                 q = q.split()
                 index = 0
                 if q[0] in self.q_words:
-                    index = q_words.index(q[0])
+                    index = self.q_words.index(q[0])
                 final_list.append(index)
         return np.asarray(final_list)
     

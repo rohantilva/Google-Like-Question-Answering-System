@@ -3,6 +3,7 @@ from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import MLPClassifier
 from sklearn.metrics import f1_score, accuracy_score, precision_score, recall_score
 from sklearn.utils import resample
+from sklearn.preprocessing import MinMaxScaler
 import pickle
 import numpy as np
 from random import shuffle
@@ -39,18 +40,45 @@ def subtractive_balance(x, y):
 
 def train_model_SVM(train_data, dev_data, num_resamples=5):
     x_train = train_data['x']
-    #x_train = x_train.reshape(-1, 1)
+    scaler = MinMaxScaler()
+    det = x_train[:, 2].reshape(-1, 1)
+    infinites = np.argwhere(np.isinf(det))
+    for n in infinites:
+        det[n] = 0
+    scaler.fit(det)
+    s = x_train[:, 3].reshape(-1, 1)
+    scaler.fit(s)
+    vec1 = scaler.transform(det).flatten()
+    vec2 = scaler.transform(s).flatten()
+    x_train[:, 2] = vec1
+    x_train[:, 3] = vec2
     y_train = train_data['y']
     (x_train, y_train) = subtractive_balance(x_train, y_train)
     x_dev = dev_data['x']
     #x_dev = x_dev.reshape(-1, 1)
     y_dev = dev_data['y']
+
+    det = x_dev[:, 2].reshape(-1, 1)
+    infinites = np.argwhere(np.isinf(det))
+    for n in infinites:
+        det[n] = 0
+    scaler.fit(det)
+    s = x_dev[:, 3].reshape(-1, 1)
+    scaler.fit(s)
+    vec1 = scaler.transform(det).flatten()
+    vec2 = scaler.transform(s).flatten()
+    x_dev[:, 2] = vec1
+    x_dev[:, 3] = vec2
+
     C = 1e-7
     curr_best_C = 0
     best_f1 = 0
     best_p = 0
     best_r = 0
     f1_scores = []
+    best_model = LinearSVC()
+    # x_train = x_train[:, 1].reshape(-1, 1)
+    # x_dev = x_dev[:, 1].reshape(-1, 1)
     while (C <= 1e7):
         for sample_num in range(num_resamples):
             model = LinearSVC(C=C)
@@ -63,50 +91,89 @@ def train_model_SVM(train_data, dev_data, num_resamples=5):
                 curr_best_C = C
                 best_p = precision_score(y_dev, y_dev_pred)
                 best_r = recall_score(y_dev, y_dev_pred)
+                best_model = model
         C = C * 10
     print(best_f1)
     print(best_p)
     print(best_r)
     print(curr_best_C)
+    print(best_model)
 
 
 def train_MLP(train_data, dev_data, num_resamples=5):
     x_train = train_data['x']
     #x_train = x_train.reshape(-1, 1)
     y_train = train_data['y']
+    x_dev = dev_data['x']
+    #x_dev = x_dev.reshape(-1, 1)
+    y_dev = dev_data['y']
+
+    scaler = MinMaxScaler()
+    det = x_train[:, 2].reshape(-1, 1)
+    infinites = np.argwhere(np.isinf(det))
+    for n in infinites:
+        det[n] = 0
+    scaler.fit(det)
+    s = x_train[:, 3].reshape(-1, 1)
+    scaler.fit(s)
+    vec1 = scaler.transform(s).flatten()
+    vec2 = scaler.transform(s).flatten()
+    x_train[:, 2] = vec1
+    x_train[:, 3] = vec2
+    y_train = train_data['y']
     (x_train, y_train) = subtractive_balance(x_train, y_train)
     x_dev = dev_data['x']
     #x_dev = x_dev.reshape(-1, 1)
     y_dev = dev_data['y']
+
+    det = x_dev[:, 2].reshape(-1, 1)
+    infinites = np.argwhere(np.isinf(det))
+    for n in infinites:
+        det[n] = 0
+    scaler.fit(det)
+    s = x_dev[:, 3].reshape(-1, 1)
+    scaler.fit(s)
+    vec1 = scaler.transform(det).flatten()
+    vec2 = scaler.transform(s).flatten()
+    x_dev[:, 2] = vec1
+    x_dev[:, 3] = vec2
+
     C = 1e-7
     curr_best_C = 0
     best_f1 = 0
     best_p = 0
     best_r = 0
     f1_scores = []
+    best_model = MLPClassifier()
+    # x_train = x_train[:, 1].reshape(-1, 1)
+    # x_dev = x_dev[:, 1].reshape(-1, 1)
     while (C <= 1e7):
-        model = MLPClassifier(solver='lbfgs', alpha=C, random_state=1)
+        model = MLPClassifier(solver='sgd', alpha=C, random_state=1, hidden_layer_sizes=(200,), max_iter=500, learning_rate='adaptive')
         for sample_num in range(num_resamples):
             (x_train_boot, y_train_boot) = resample(x_train, y_train)
             model.fit(x_train_boot, y_train_boot)
-            y_dev_pred = model.predict(x_dev)
+            probs = model.predict_proba(x_dev)
+            y_dev_pred = [0 if n[1] > 0. else 1 for n in probs]
+            #y_dev_pred = model.predict(x_dev)
             f1 = f1_score(y_dev, y_dev_pred)
             if f1 > best_f1:
                 best_f1 = f1
                 curr_best_C = C
                 best_p = precision_score(y_dev, y_dev_pred)
                 best_r = recall_score(y_dev, y_dev_pred)
+                best_model = model
         C = C * 10
     print(best_f1)
     print(best_p)
     print(best_r)
     print(curr_best_C)
+    print(best_model)
 
 
 def main():
     train_data = pickle.load(open("./processed_train.p", "rb"))
     dev_data = pickle.load(open("./processed_dev.p", "rb"))
-    train_model_SVM(train_data, dev_data)
+    #train_model_SVM(train_data, dev_data)
     train_MLP(train_data, dev_data)
 
 
