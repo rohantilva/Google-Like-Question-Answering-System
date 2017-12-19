@@ -9,7 +9,7 @@ import pickle
 import re
 import numpy as np
 
-class Union_Intersect:
+class UnionIntersect:
     def __get_percentage(self, question, answer):
         question = question.split(" ")
         answer = answer.split(" ")
@@ -34,7 +34,7 @@ class Union_Intersect:
                 q = alpha.sub(' ', str(arr[1]))
                 a = alpha.sub(' ', str(arr[5]))
                 vals.append(self.__get_percentage(q, a))
-        return np.asarray(sum_vals)
+        return np.asarray(vals)
 
     def get_percentage_run(self, data):
         vals = []
