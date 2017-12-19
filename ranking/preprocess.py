@@ -12,24 +12,26 @@ import pickle
 import re
 
 class Preprocess:
-    def __init__(self, query_candidates, sritem, str_to_uuid):
-        self.query_cands = 
-
-    def process_dataset(self, dataset):
+    def process_dataset(self, dataset, pickle_name):
         tfidf = TfidfPreprocess()
         pack = tfidf.preprocess_tfidf_dataset(dataset)
         sim_vector = pack[0]
         labels = pack[1]
-        sim_vector.flatten()
+        sim_vector = sim_vector.flatten()
+        print(sim_vector)
         qwords = QwordPreprocess()
         question_vector = qwords.get_question_word_data(dataset)
+        print(question_vector)
         we = WordEmbeddings()
         det_val_vector = we.get_det_val_dataset(dataset)
+        print(det_val_vector)
         sum_val_vector = we.get_sum_vals_dataset(dataset)
+        print(sum_val_vector)
         matrix = np.vstack((sim_vector, question_vector, det_val_vector, sum_val_vector))
         matrix = matrix.transpose()
-        processed_data = dict(x=matrix, y=labelsn)
-        with open("./processed_" + str(dataset) + ".p", "wb") as p:
+        print(matrix)
+        processed_data = dict(x=matrix, y=labels)
+        with open(str(pickle_name) + ".p", "wb") as p:
             pickle.dump(processed_data, p)
 
 
