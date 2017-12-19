@@ -9,11 +9,6 @@ class WordEmbeddings:
         self.nlp = spacy.load('en')
 
     def getDetVal(self, query, answer):
-        # query = query.replace(","," ")
-        # query = query.replace("'"," ")
-        # query = query.replace('"',"")
-        # query = query.replace("/"," ")
-        # query = query.replace("?","")
         terms1 = self.nlp(query)
         terms2 = self.nlp(answer)
         A = []
@@ -38,11 +33,6 @@ class WordEmbeddings:
         return detSum
 
     def getSumVal(self, query, answer):
-        # query = query.replace(","," ")
-        # query = query.replace("'"," ")
-        # query = query.replace('"',"")
-        # query = query.replace("/"," ")
-        # query = query.replace("?","")
         terms1 = self.nlp(query)
         terms2 = self.nlp(answer)
         vector1 = []
