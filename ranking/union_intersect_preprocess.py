@@ -1,0 +1,43 @@
+import numpy as np
+import sklearn.metrics.pairwise
+import sklearn
+import math
+import gzip
+from scipy import sparse
+import logging
+import pickle
+import re
+import numpy as np
+
+class Union_Intersect:
+    def __get_percentage(self, question, answer):
+        question = question.split(" ")
+        answer = answer.split(" ")
+        insersection = list(set(questions).intersection(answers))
+        num_intersect = len(temp_list)
+
+        union = list(set(questions).union(answers))
+        num_union = len(union)
+
+        feat = num_intersect/num_union
+        return feat
+
+    def get_percentage_dataset(self, dataset):
+        vals = []
+        with gzip.open(dataset, 'rb') as f:
+            next(f)
+            for line in f:
+                line = line.decode('UTF-8')
+                line = line.lower()
+                arr = line.split("\t")
+                alpha = re.compile('[^0-9a-zA-Z]')
+                q = alpha.sub(' ', str(arr[1]))
+                a = alpha.sub(' ', str(arr[5]))
+                vals.append(self.__get_percentage(q, a))
+        return np.asarray(sum_vals)
+
+    def get_percentage_run(self, data):
+        vals = []
+        for pair in data():
+            vals.append(self.__get_percentage(pair[0], pair[1]))
+        return np.asarray(vals)
