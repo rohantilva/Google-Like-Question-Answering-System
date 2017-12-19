@@ -8,12 +8,7 @@ class WordEmbeddings:
     def __init__(self):
         self.nlp = spacy.load('en')
 
-    def getDetVal(self, query, answer):
-        # query = query.replace(","," ")
-        # query = query.replace("'"," ")
-        # query = query.replace('"',"")
-        # query = query.replace("/"," ")
-        # query = query.replace("?","")
+    def __getDetVal(self, query, answer):
         terms1 = self.nlp(query)
         terms2 = self.nlp(answer)
         A = []
@@ -37,12 +32,7 @@ class WordEmbeddings:
         detSum = detSum / (dimMax-dimMin+1)
         return detSum
 
-    def getSumVal(self, query, answer):
-        # query = query.replace(","," ")
-        # query = query.replace("'"," ")
-        # query = query.replace('"',"")
-        # query = query.replace("/"," ")
-        # query = query.replace("?","")
+    def __getSumVal(self, query, answer):
         terms1 = self.nlp(query)
         terms2 = self.nlp(answer)
         vector1 = []
@@ -59,3 +49,50 @@ class WordEmbeddings:
         vector1 = self.array(vector1).reshape(1, -1)
         vector2 = self.array(vector2).reshape(1, -1)
         return self.cosine(vector1, vector2)[0][0]
+
+    
+    def get_det_val_dataset(self, dataset):
+        det_vals = []
+        with gzip.open(dataset, 'rb') as f:
+            next(f)
+            for line in f:
+                line = line.decode('UTF-8')
+                line = line.lower()
+                arr = line.split("\t")
+                alpha = re.compile('[^0-9a-zA-Z]')
+                q = alpha.sub(' ', str(arr[1]))
+                a = alpha.sub(' ', str(arr[5]))
+                det_vals.append(self.__getDetVal(q, a))
+        return np.asarray(det_vals)
+    
+    
+    def get_det_vals_run(self, data):
+        det_vals = []
+        for pair in data():
+            det_vals.append(self.__getDetVal(pair[0], pair[1]))
+        return np.asarray(det_vals)
+
+    
+    def get_sum_vals_dataset(self, dataset):
+        sum_vals = []
+        with gzip.open(dataset, 'rb') as f:
+            next(f)
+            for line in f:
+                line = line.decode('UTF-8')
+                line = line.lower()
+                arr = line.split("\t")
+                alpha = re.compile('[^0-9a-zA-Z]')
+                q = alpha.sub(' ', str(arr[1]))
+                a = alpha.sub(' ', str(arr[5]))
+                sum__vals.append(self.__getSumVal(q, a))
+        return np.asarray(sum_vals)
+
+
+    def get_sum_vals_run(self, data):
+        sum_vals = []
+        for pair in data():
+            sum_vals.append(self.__getSumVal(pair[0], pair[1]))
+        return np.asarray(sum_vals)
+
+    
+
