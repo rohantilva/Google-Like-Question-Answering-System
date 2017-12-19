@@ -18,6 +18,7 @@ class SearchHandler(SearchService.Iface):
         self.corpus_name = corpus_name
         self.port = port
         self.host = host
+
     def alive(self):
         return True
 
@@ -49,14 +50,22 @@ class SearchHandler(SearchService.Iface):
         for key in resultsDict:
             results.append(resultsDict[key])
         # comm_ids_list, temp = get_comm_ids(results)
-        # logging.info(fetch_dataset(comm_ids_list, temp))
-        return SearchResult(uuid=aug.next(),
-                            searchQuery=query,
-                            searchResultItems=results,
-                            metadata=AnnotationMetadata(
-                                tool="search",
-                                timestamp=int(time.time())),
-                            lang="eng")
+        # dictUUID = fetch_dataset(comm_ids_list, temp)
+        # inv_map = {v: k for k, v in dictUUID.items()
+        # toHannah = []
+        # for uuid in dictUUID:
+            # toHannah.append([query, dictUUID[uuid]])
+        resultItemRet = SearchResult(uuid=aug.next(),
+                                     searchQuery=query,
+                                     searchResultItems=results,
+                                     metadata=AnnotationMetadata(
+                                        tool="search",
+                                        timestamp=int(time.time())),
+                                     lang="eng")
+        # feature_matrix = preprocess(toHannah)
+        # dictRanks = rohanFunction(feature_matrix, resultItemRet, inv_map)
+        # results = rerank(dictUUID, results)
+        return resultItemRet
         # augf = AnalyticUUIDGeneratorFactory()
         # aug = augf.create()
         # with SearchClientWrapper(self.host, self.port) as sc:
@@ -91,8 +100,9 @@ def fetch_dataset(comm_ids, dict_uuid_commID):
                     #sentence_dict[sentence.uuid.uuidString] = comm.text[sentence.textSpan.start:sentence.textSpan.ending]
             #comm_dict[comm_ids[counter]] = sentence_dict
 
-    print(dict_uuid_commID)
-    inv_map = {v: k for k, v in dict_uuid_commID.items()}
+    print(dict_uuid_commID) #dict from uuid to sentences
+    inv_map = {v: k for k, v in dict_uuid_commID.items() #dict from sentences to uuid}
+    return dict_uuid_commID
 
 if __name__ == "__main__":
     from argparse import ArgumentParser, ArgumentDefaultsHelpFormatter
@@ -110,7 +120,8 @@ if __name__ == "__main__":
     while True:
         try:
             with SearchClientWrapper("search", "9090") as search_client:
-                handler = SearchHandler(search_client, "wikiQA", "", "")
+                # Create preprocess and train it here, need to pass to handler
+                handler = SearchHandler(search_client, "wikiQA", "", "", None)
                 # handler = SearchHandler(None, "wikiQA", args.search_host, args.search_port)
                 server = SearchServiceWrapper(handler)
 
