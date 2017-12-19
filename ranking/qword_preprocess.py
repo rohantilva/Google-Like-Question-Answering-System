@@ -7,6 +7,7 @@ from scipy import sparse
 import logging
 import pickle
 import re
+import numpy as np
 
 class QwordPreprocess:
     def __init__(self):
@@ -27,12 +28,15 @@ class QwordPreprocess:
                 if q[0] in self.q_words:
                     index = q_words.index(q[0])
                 final_list.append(index)
-        return final_list
+        return np.asarray(final_list)
     
     def get_question_word_run(self, data):
         final_list = []
-        for k in data.keys():
-            if k[0] in self.q_words:
-                index = q_words.index(q[0])
+        for pair in data:
+            question = pair[0]
+            question = question.split()
+            index = 0
+            if question[0] in self.q_words:
+                index = q_words.index(question[0])
             final_list.append(index)
-        return final_list
+        return np.asarray(final_list)

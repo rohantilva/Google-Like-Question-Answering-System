@@ -41,17 +41,17 @@ class TfidfPreprocess:
     def __get_distinct_words_run(self, data):
         distinct_words = {}
         count = 0
-        for k in data.keys():
-            for word in k:
+        for pair in data:
+            question = pair[0].split()
+            answer = pair[1].split()
+            for word in question:
                 if word not in distinct_words.keys():
                     distinct_words[word] = count
                     count += 1
-            for candidate in data[k]:
-                for word in candidate:
-                    if word not in distinct_words.keys():
-                        count += 1
+            for word in answer:
+                if word not in distinct_words.keys():
+                    count += 1
         return(distinct_words)
-            
 
 
     def __calc_tfidf_dataset(self, dataset, q_list, a_list):
@@ -114,29 +114,29 @@ class TfidfPreprocess:
         q_list = {}
         a_list = {}
         answer_count = 0
-        for k in data.keys():
-            unique_qw = dict((el, True) for el in k)
-            for word in k:
+        for pair in data:
+            question = pair[0].split()
+            answer = pair[1].split()
+            unique_qw = dict((el, True) for el in question)
+            unique_aw = dict((el, True) for el in answer)
+            for word in question:
                 if word not in q_list.keys():
                     q_list[word] = [0, 0]
                 q_list[word][0] += 1
             for key in unique_qw.keys():
                 q_list[key][1] += 1
-            for candidate in data[k]:
-                answer_count += 1
-                unique_aw = dict((el, True) for el in candidate)
-                for word in candidate:
-                    if word not in a_list.keys():
-                        a_list[word][0] = [0, 0]
-                    a_list[word][0] += 1
-                for key in unique_aw.keys():
-                    a_list[key][1] += 1
-        question_count = len(data.keys())
+            for word in answer:
+                if word not in a_list.keys():
+                    a_list[word][0] = [0, 0]
+                a_list[word][0] += 1
+            for key in unique_aw.keys():
+                a_list[key][1] += 1
+        answer_count = len(data)
         q_scores = {}
         for k in q_list.keys():
             val = q_list[k]
             tf = val[0]
-            score = tf * math.log((float(question_count)) / float(val[1]))
+            score = tf * math.log((float(1)) / float(val[1]))
             q_scores[k] = score
         a_scores = {}
         for k in a_list.keys():
@@ -177,20 +177,21 @@ class TfidfPreprocess:
 
     def __cosine_sim_run(self, data, q_scores, a_scores, unique):
         sim_vec = []
-        for k in data.keys():
+        for pair in data:
             q_score_vec = np.zeros(len(unique))
-            for w in k:
-                if w in unique.keys():
+            a_score_vec = np.zeros(len(unique))
+            question = pair[0].split()
+            answer = pair[1].split()
+            for word in question:
+                if word in unique.keys():
                     q_score_vec[unique[w]] = q_scores[w]
+            for word in answer:
+                if word in unique.keys():
+                    a_score_vec[unique[w]] = a_scores[w]
             q_score_sparse = sparse.csr_matrix(q_score_vec)
-            for candidate in data[k]:
-                ascore_vec = np.zeros(len(unique))
-                for w in candidate:
-                    if w in unique.keys():
-                        ascore_vec[unique[w]] = a_scores[w]
-                ascore_sparse = sparse.csr_matrix(ascore_vec)
-                cos_sim = sklearn.metrics.pairwise.cosine_similarity(qscore_sparse, ascore_sparse)
-                sim_vec.append(cos_sim)
+            ascore_sparse = sparse.csr_matrix(ascore_vec)
+            cos_sim = sklearn.metrics.pairwise.cosine_similarity(qscore_sparse, ascore_sparse)
+            sim_vec.append(cos_sim)
         return(sim_vec)
                 
 
@@ -202,16 +203,16 @@ class TfidfPreprocess:
         q_scores = tfidf[0]
         a_scores = tfidf[1]
         sims = np.asarray(self.__cosine_sim_dataset(dataset, q_scores, a_scores, distinct_word))
-        return sims
+        return (sims, labels)
     
 
-    def preprocess_tfidf_runtime(self, data_dict):
-        first_pass = self.__get_distinct_words_run(data_dict)
+    def preprocess_tfidf_runtime(self, data):
+        first_pass = self.__get_distinct_words_run(data)
         distinct_word = first_pass[0]
-        tfidf = self.__calc_tfidf_run(data_dict, {}, {})
+        tfidf = self.__calc_tfidf_run(data, {}, {})
         q_scores = tfidf[0]
         a_scores = tfidf[1]
-        sims = np.asarray(self.__cosine_sim_run(data_dict, q_scores, a_scores, distinct_word))
+        sims = np.asarray(self.__cosine_sim_run(data, q_scores, a_scores, distinct_word))
         return sims
 
 
