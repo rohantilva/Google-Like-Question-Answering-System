@@ -6,6 +6,14 @@ RUN pip install nltk
 RUN python -m nltk.downloader -d /usr/local/share/nltk_data all
 ADD search_passthrough.py /opt/
 ADD query_int.py /opt/
+ADD keras-train.py /opt/
+ADD preprocess.py /opt/
+ADD qword_preprocess.py /opt/
+ADD rerank.py /opt/
+ADD test_model.py /opt/
+ADD tfidf_preprocess.py /opt/
+ADD train_model.py /opt/
+ADD word_embeddings.py /opt/
 WORKDIR /opt
 
 ENTRYPOINT ["python", "search_passthrough.py"]
