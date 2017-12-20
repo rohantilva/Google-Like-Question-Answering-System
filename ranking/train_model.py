@@ -52,7 +52,7 @@ def train_model_SVM(train_data, dev_data, num_resamples=5):
     x_train[:, 2] = vec1
     x_train[:, 3] = vec2
     y_train = train_data['y']
-    (x_train, y_train) = subtractive_balance(x_train, y_train)
+    #(x_train, y_train) = subtractive_balance(x_train, y_train)
     x_dev = dev_data['x']
     #x_dev = x_dev.reshape(-1, 1)
     y_dev = dev_data['y']
@@ -119,7 +119,7 @@ def train_MLP(train_data, dev_data, num_resamples=5):
     x_train[:, 2] = vec1
     x_train[:, 3] = vec2
     y_train = train_data['y']
-    (x_train, y_train) = subtractive_balance(x_train, y_train)
+    #(x_train, y_train) = subtractive_balance(x_train, y_train)
     x_dev = dev_data['x']
     #x_dev = x_dev.reshape(-1, 1)
     y_dev = dev_data['y']
@@ -146,7 +146,7 @@ def train_MLP(train_data, dev_data, num_resamples=5):
     f1_scores = []
     best_model = MLPClassifier()
     while (C <= 1e7):
-        model = MLPClassifier(solver='lbfgs', alpha=C, random_state=1, batch_size=400, activation='tanh')
+        model = MLPClassifier(solver='lbfgs', alpha=C, random_state=1, activation='tanh')
         for sample_num in range(num_resamples):
             (x_train_boot, y_train_boot) = resample(x_train, y_train)
             model.fit(x_train_boot, y_train_boot)
@@ -178,8 +178,8 @@ def main():
     dev_data = pickle.load(open("./processed_dev.p", "rb"))
     #train_model_SVM(train_data, dev_data)
     model = train_MLP(train_data, dev_data)
-    with open("trained_model.p", "wb") as p:
-        pickle.dump(model, p)
+    # with open("trained_model.p", "wb") as p:
+    #     pickle.dump(model, p)
 
 
 

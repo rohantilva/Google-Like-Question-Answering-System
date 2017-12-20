@@ -127,7 +127,7 @@ class TfidfPreprocess:
                 q_list[key][1] += 1
             for word in answer:
                 if word not in a_list.keys():
-                    a_list[word][0] = [0, 0]
+                    a_list[word] = [0, 0]
                 a_list[word][0] += 1
             for key in unique_aw.keys():
                 a_list[key][1] += 1
@@ -184,10 +184,10 @@ class TfidfPreprocess:
             answer = pair[1].split()
             for word in question:
                 if word in unique.keys():
-                    q_score_vec[unique[w]] = q_scores[w]
+                    q_score_vec[unique[word]] = q_scores[word]
             for word in answer:
                 if word in unique.keys():
-                    a_score_vec[unique[w]] = a_scores[w]
+                    a_score_vec[unique[word]] = a_scores[w]
             q_score_sparse = sparse.csr_matrix(q_score_vec)
             ascore_sparse = sparse.csr_matrix(ascore_vec)
             cos_sim = sklearn.metrics.pairwise.cosine_similarity(qscore_sparse, ascore_sparse)
