@@ -4,7 +4,7 @@ from concrete.util.access_wrapper import FetchCommunicationClientWrapper
 from concrete import FetchRequest
 from nltk.corpus import wordnet
 import nltk
-from utils import SearchKDFT
+# from utils import SearchKDFT
 
 # stemming function constructs a new string with stemmed words (if possible).
 # Returns string with modified words.
@@ -18,21 +18,21 @@ def stem(query):
 
 def return_search_results(sentence):
     # common linking verbs
-    linking_verbs = ['am', 'be', 'are', 'wa', 'being']
+    linking_verbs = ['am', 'be', 'are', 'was', 'being']
     sentence = stem(sentence)
     tokens = nltk.word_tokenize(sentence)
     tagged = nltk.pos_tag(tokens)
-     
+
     queries_verb = []
     queries_adj = []
     queries_adv = []
-    
+
     queries_verb.append(sentence)
     queries_adj.append(sentence)
     queries_adv.append(sentence)
-    
+
     print(tagged)
-    
+
     for tups in tagged:
         if tups[1].startswith('V'):
             word = tups[0]
@@ -46,7 +46,7 @@ def return_search_results(sentence):
                             queries_verb.append(new_sentence)
                     if len(queries_verb) >= 11:
                         break
-    
+
     for tups in tagged:
         if tups[1] == 'JJ':
             word = tups[0]
@@ -59,7 +59,7 @@ def return_search_results(sentence):
                         queries_adj.append(new_sentence)
                 if len(queries_adj) >= 11:
                     break
-    
+
     for tups in tagged:
         if tups[1] == 'RB':
             word = tups[0]
@@ -72,26 +72,32 @@ def return_search_results(sentence):
                         queries_adv.append(new_sentence)
                 if len(queries_adv) >= 11:
                     break
-    
+
     queries = list(set(queries_verb) | set(queries_adj) | set(queries_adv))
     queries.append(sentence)
-    print('queries are' + str(queries))
-    s = SearchKDFT()
-    results = list()
+    queryDict = {}
     for query in queries:
-        result = s.search(query)
-        print(result)
-        print()
-        print()
+        queryDict[query] = 0
+    queries = []
+    for query in queryDict:
+        queries.append(query)
+    # print('queries are' + str(queries))
+    # s = SearchKDFT()
+    # results = list()
+    # for query in queries:
+        # result = s.search(query)
+        # print(result)
+        # print()
+        # print()
 #        results.append(result)
 
-        
-    return results
+    return queries
+    # return results
 
-def get_comm_ids(results):
+'''def get_comm_ids(results):
     comm_ids_list = list()
     #for result in results:
-        
+
 
 def fetch_large_dataset():
     with FetchCommunicationClientWrapper("ec2-35-153-184-225.compute-1.amazonaws.com", 9090) as fc:
@@ -129,4 +135,4 @@ def fetch_large_dataset():
 
 results = return_search_results("Who is the point guard for the Cleveland Cavaliers?")
 get_comm_ids(results)
-fetch_large_dataset()
+fetch_large_dataset()'''

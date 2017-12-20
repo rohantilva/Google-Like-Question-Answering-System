@@ -1,7 +1,10 @@
 from tfidf_preprocess import TfidfPreprocess
 from qword_preprocess import QwordPreprocess
 from word_embeddings import WordEmbeddings
+<<<<<<< HEAD
+=======
 from union_intersect_preprocess import UnionIntersect
+>>>>>>> master
 import numpy as np
 import sklearn.metrics.pairwise
 import sklearn

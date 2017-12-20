@@ -1,8 +1,9 @@
-from keras.models import Sequential
-from keras.layers import Dense, Activation
+from sklearn.svm import LinearSVC
+from sklearn.linear_model import LogisticRegression
+from sklearn.metrics import f1_score, accuracy_score, precision_score, recall_score
 import pickle
-from random import shuffle
 import numpy as np
+from random import shuffle
 
 
 def subtractive_balance(x, y):
@@ -34,35 +35,41 @@ def subtractive_balance(x, y):
     return (x[id_bal], y[id_bal])
 
 
-def build_model():
-    model = Sequential()
-    model.add(Dense(20360, input_shape=(2,), activation="sigmoid"))
-    #model.add(Dense(1000, activation="linear"))
-    #model.add(Dense(500, activation="linear"))
-    #model.add(Dense(2, activation="sigmoid"))
-    return(model)
 
+def train_model(train_data, dev_data):
+    x_train = train_data['x']
+    print(x_train.shape)
+    #x_train = x_train.reshape(-1, 1)
+    y_train = train_data['y']
+    (x_train, y_train) = subtractive_balance(x_train, y_train)
 
-def train_model(model, td, dd):
-    model.compile(optimizer='rmsprop',
-              loss='binary_crossentropy',
-              metrics=['accuracy'])
-    x_train = td['x']
-    y_train = td['y']
-    #(x_train, y_train) = subtractive_balance(x_train, y_train)
-    # x_dev = dd['x']
-    # y_dev = dd['y']
+    x_dev = dev_data['x']
+    #x_dev = x_dev.reshape(-1, 1)
+    y_dev = dev_data['y']
 
-    model.fit(x_train, y_train, epochs=10, batch_size=32)
-
+    C = 1e-7
+    curr_best_C = 0
+    f1_scores = []
+    while (C <= 1e7):  
+        model = LinearSVC(C=C)
+        model.fit(x_train, y_train)
+        y_dev_pred = model.predict(x_dev)
+        f1 = f1_score(y_dev, y_dev_pred)
+        print("C-value: ", C)
+        print("F1 Score: ", f1)
+        print("P: ", precision_score(y_dev, y_dev_pred))
+        print("R: ", recall_score(y_dev, y_dev_pred))
+        f1_scores.append(f1)
+        C = C * 10
 
 
 def main():
-    m = build_model()
     train_data = pickle.load(open("./processed_train.p", "rb"))
     dev_data = pickle.load(open("./processed_dev.p", "rb"))
-    train_model(m, train_data, dev_data)
-    return
+    train_model(train_data, dev_data)
+
+    
+
 
 if __name__ == '__main__':
     main()
