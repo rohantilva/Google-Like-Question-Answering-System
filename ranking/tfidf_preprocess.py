@@ -42,8 +42,10 @@ class TfidfPreprocess:
         distinct_words = {}
         count = 0
         for pair in data:
-            q = pair[0].split().lower()
-            a = pair[1].split().lower()
+            q = str(pair[0]).split()
+            q = q.lower()
+            a = str(pair[1]).split()
+            a = a.lower()
             alpha = re.compile('[^0-9a-zA-Z]')
             question = alpha.sub(' ', q)
             answer = alpha.sub(' ', a)
@@ -118,8 +120,10 @@ class TfidfPreprocess:
         a_list = {}
         answer_count = 0
         for pair in data:
-            q = pair[0].split().lower()
-            a = pair[1].split().lower()
+            q = str(pair[0]).split()
+            q = q.lower()
+            a = str(pair[1]).split()
+            a = a.lower()
             alpha = re.compile('[^0-9a-zA-Z]')
             question = alpha.sub(' ', q)
             answer = alpha.sub(' ', a)

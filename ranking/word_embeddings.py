@@ -85,8 +85,10 @@ class WordEmbeddings:
         det_vals = []
         for pair in data:
             alpha = re.compile('[^0-9a-zA-Z]')
-            question = pair[0].lower()
-            answer = pair[1].lower()
+            question = str(pair[0])
+            question = question.lower()
+            answer = str(pair[1])
+            answer = answer.lower()
             q = alpha.sub(' ', question)
             a = alpha.sub(' ', answer)
             det_vals.append(self.__getDetVal(q, a))
@@ -112,8 +114,10 @@ class WordEmbeddings:
         sum_vals = []
         for pair in data:
             alpha = re.compile('[^0-9a-zA-Z]')
-            question = pair[0].lower()
-            answer = pair[1].lower()
+            question = str(pair[0])
+            question = question.lower()
+            answer = str(pair[1])
+            answer = answer.lower()
             q = alpha.sub(' ', question)
             a = alpha.sub(' ', answer)
             sum_vals.append(self.__getSumVal(q, a))
@@ -138,8 +142,10 @@ class WordEmbeddings:
         sim_vals = []
         for pair in data:
             alpha = re.compile('[^0-9a-zA-Z]')
-            question = pair[0].lower()
-            answer = pair[1].lower()
+            question = str(pair[0])
+            question = question.lower()
+            answer = str(pair[1])
+            answer = answer.lower()
             q = alpha.sub(' ', question)
             a = alpha.sub(' ', answer)
             sim_vals.append(self.__getSpacySim(q, a))

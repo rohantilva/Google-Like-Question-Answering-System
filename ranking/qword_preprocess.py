@@ -35,8 +35,11 @@ class QwordPreprocess:
         for pair in data:
             question = pair[0]
             question = question.split()
+            question = question.lower()
+            alpha = re.compile('[^0-9a-zA-Z]')
+            q = alpha.sub(' ', question))
             index = 0
             if question[0] in self.q_words:
-                index = self.q_words.index(question[0])
+                index = self.q_words.index(q[0])
             final_list.append(index)
         return np.asarray(final_list)

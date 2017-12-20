@@ -39,5 +39,12 @@ class UnionIntersect:
     def get_percentage_run(self, data):
         vals = []
         for pair in data:
-            vals.append(self.__get_percentage(pair[0], pair[1]))
+            alpha = re.compile('[^0-9a-zA-Z]')
+            question = str(pair[0])
+            question = question.lower()
+            answer = str(pair[1])
+            answer = answer.lower()
+            q = alpha.sub(' ', question)
+            a = alpha.sub(' ', answer)
+            vals.append(self.__get_percentage(q, a))
         return np.asarray(vals)

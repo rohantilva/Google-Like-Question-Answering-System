@@ -175,8 +175,8 @@ def main():
     dev_data = pickle.load(open("./processed_dev.p", "rb"))
     #train_model_SVM(train_data, dev_data)
     model = train_MLP(train_data, dev_data)
-    # with open("trained_model.p", "wb") as p:
-    #     pickle.dump(model, p)
+    with open("trained_model.p", "wb") as p:
+        pickle.dump(model, p)
 
 
 
