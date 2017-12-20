@@ -34,7 +34,6 @@ class QwordPreprocess:
         final_list = []
         for pair in data:
             question = pair[0]
-            question = question.split()
             question = question.lower()
             alpha = re.compile('[^0-9a-zA-Z]')
             q = alpha.sub(' ', question))
