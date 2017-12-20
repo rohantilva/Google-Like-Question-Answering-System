@@ -119,7 +119,7 @@ def train_MLP(train_data, dev_data, num_resamples=5):
     x_train[:, 2] = vec1
     x_train[:, 3] = vec2
     y_train = train_data['y']
-    #(x_train, y_train) = subtractive_balance(x_train, y_train)
+    (x_train, y_train) = subtractive_balance(x_train, y_train)
     x_dev = dev_data['x']
     #x_dev = x_dev.reshape(-1, 1)
     y_dev = dev_data['y']
@@ -141,7 +141,6 @@ def train_MLP(train_data, dev_data, num_resamples=5):
     best_f1 = 0
     best_p = 0
     best_r = 0
-    #added
     best_prob = None
     f1_scores = []
     best_model = MLPClassifier()
@@ -152,12 +151,10 @@ def train_MLP(train_data, dev_data, num_resamples=5):
             model.fit(x_train_boot, y_train_boot)
             probs = model.predict_proba(x_dev)
             y_dev_pred = model.predict(x_dev)
-            #added
             y_dev_pred_prob = model.predict_proba(x_dev)
             np.set_printoptions(threshold=np.nan)
             f1 = f1_score(y_dev, y_dev_pred)
             if f1 > best_f1:
-                #added
                 best_prob = y_dev_pred_prob 
                 best_f1 = f1
                 curr_best_C = C

@@ -25,19 +25,22 @@ class WordEmbeddings:
         A = np.matrix(A)
         B = np.matrix(B)
         A = A.transpose()
-        dotProd = np.dot(B, A)
-        dimMax = max(np.shape(dotProd))
-        dimMin = min(np.shape(dotProd))
-        detSum = 0
-        for i in range(dimMax - dimMin + 1):
-            if dimMax == np.shape(dotProd)[0]:
-                sub = dotProd[i:i + dimMin, :]
-            else:
-                sub = dotProd[:, i:i + dimMin]
-            detSum += np.linalg.det(sub)
-        detSum = detSum / (dimMax-dimMin+1)
-        if math.isnan(detSum):
+        try:
+            dotProd = np.dot(B, A)
+            dimMax = max(np.shape(dotProd))
+            dimMin = min(np.shape(dotProd))
             detSum = 0
+            for i in range(dimMax - dimMin + 1):
+                if dimMax == np.shape(dotProd)[0]:
+                    sub = dotProd[i:i + dimMin, :]
+                else:
+                    sub = dotProd[:, i:i + dimMin]
+                detSum += np.linalg.det(sub)
+            detSum = detSum / (dimMax-dimMin+1)
+            if math.isnan(detSum):
+                detSum = 0
+        except:
+            return 0
         return detSum
 
     def __getSumVal(self, query, answer):
@@ -45,7 +48,7 @@ class WordEmbeddings:
         terms2 = self.nlp(answer)
         vector1 = []
         vector2 = []
-        for index in range(384):
+        for index in range(300):
             vector1.append(0)
             vector2.append(0)
         for term in terms1:
@@ -81,7 +84,12 @@ class WordEmbeddings:
     def get_det_vals_run(self, data):
         det_vals = []
         for pair in data:
-            det_vals.append(self.__getDetVal(pair[0], pair[1]))
+            alpha = re.compile('[^0-9a-zA-Z]')
+            question = pair[0].lower()
+            answer = pair[1].lower()
+            q = alpha.sub(' ', question)
+            a = alpha.sub(' ', answer)
+            det_vals.append(self.__getDetVal(q, a))
         return np.asarray(det_vals)
 
 
@@ -103,7 +111,12 @@ class WordEmbeddings:
     def get_sum_vals_run(self, data):
         sum_vals = []
         for pair in data:
-            sum_vals.append(self.__getSumVal(pair[0], pair[1]))
+            alpha = re.compile('[^0-9a-zA-Z]')
+            question = pair[0].lower()
+            answer = pair[1].lower()
+            q = alpha.sub(' ', question)
+            a = alpha.sub(' ', answer)
+            sum_vals.append(self.__getSumVal(q, a))
         return np.asarray(sum_vals)
 
     def get_spacy_sim_dataset(self, dataset):
@@ -124,5 +137,10 @@ class WordEmbeddings:
     def get_spacy_sim_run(self, data):
         sim_vals = []
         for pair in data:
-            sim_vals.append(self.__getSpacySim(pair[0], pair[1]))
+            alpha = re.compile('[^0-9a-zA-Z]')
+            question = pair[0].lower()
+            answer = pair[1].lower()
+            q = alpha.sub(' ', question)
+            a = alpha.sub(' ', answer)
+            sim_vals.append(self.__getSpacySim(q, a))
         return np.asarray(sim_vals)
