@@ -13,7 +13,7 @@ from concrete.util.access_wrapper import FetchCommunicationClientWrapper
 import collections
 
 class SearchHandler(SearchService.Iface):
-    def __init__(self, other, corpus_name, host, port):
+    def __init__(self, other, corpus_name, host, port, preprocess):
         self.other = other
         self.corpus_name = corpus_name
         self.port = port
