@@ -54,7 +54,7 @@ class SearchHandler(SearchService.Iface):
         results = []
         for key in resultsDict:
             results.append(resultsDict[key])
-        #results = results[:5] # comment out on full run
+        # results = results[:5] # comment out on full run
         comm_ids_list, temp = get_comm_ids(results)
         dictUUID = fetch_dataset(comm_ids_list, temp)
         inv_map = {v: k for k, v in dictUUID.items()}
@@ -73,6 +73,8 @@ class SearchHandler(SearchService.Iface):
         feature_matrix = pre.process_run(toHannah)
         dictRanks = pre_ranking(feature_matrix, model, toHannah, inv_map)
         results = rerank(dictRanks, resultItemRet)
+        for result in results.searchResultItems:
+            logging.info(str(result.score) + " " + str(result.communicationId))
         return results
         # augf = AnalyticUUIDGeneratorFactory()
         # aug = augf.create()

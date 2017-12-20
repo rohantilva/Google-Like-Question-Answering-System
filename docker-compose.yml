@@ -43,7 +43,7 @@ services:
       - fetch
       - search
     image: search-passthrough
-    command: -p 9090 --host 0.0.0.0 --search_port 9090 --search_host search
+    command: -p 9090 --host 0.0.0.0 --search_port 9091 --search_host ec2-52-90-242-175.compute-1.amazonaws.com
     ports:
       - "9092:9090"
 

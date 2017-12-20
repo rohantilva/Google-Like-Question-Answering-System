@@ -12,8 +12,8 @@ def pre_ranking(x_features, model, query_cands, uuidDict):
     retDict = {}
     probs = model.predict_proba(x_features)
     for i in range(len(probs)):
-        prob_yes = probs[i][1]
+        prob_no = probs[i][0]
         sentence = query_cands[i][1]
         uuid = uuidDict[sentence]
-        retDict[uuid] = prob_yes
+        retDict[uuid] = prob_no
     return retDict
