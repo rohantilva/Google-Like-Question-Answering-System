@@ -13,10 +13,10 @@ class UnionIntersect:
     def __get_percentage(self, question, answer):
         question = question.split(" ")
         answer = answer.split(" ")
-        insersection = list(set(questions).intersection(answers))
-        num_intersect = len(temp_list)
+        intersection = list(set(question).intersection(answer))
+        num_intersect = len(intersection)
 
-        union = list(set(questions).union(answers))
+        union = list(set(question).union(answer))
         num_union = len(union)
 
         feat = num_intersect/num_union
