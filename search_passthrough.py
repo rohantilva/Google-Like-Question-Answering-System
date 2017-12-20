@@ -7,7 +7,7 @@ from concrete import AnnotationMetadata, ServiceInfo, FetchRequest
 from concrete.search import SearchService
 from concrete.search.ttypes import SearchResult, SearchCapability, SearchType, SearchQuery
 from concrete.services.ttypes import ServicesException
-from concrete.util import AnalyticUUIDGeneratorFactory, SearchServiceWrapper, SearchClientWrapper
+from concrete.util import AnalyticUUIDGeneratorFactory, SearchServiceWrapper, SearchClientWrapper, lun, get_tokens
 from query_int import return_search_results
 from concrete.util.access_wrapper import FetchCommunicationClientWrapper
 import collections
@@ -49,8 +49,8 @@ class SearchHandler(SearchService.Iface):
         results = []
         for key in resultsDict:
             results.append(resultsDict[key])
-        # comm_ids_list, temp = get_comm_ids(results)
-        # dictUUID = fetch_dataset(comm_ids_list, temp)
+        comm_ids_list, temp = get_comm_ids(results)
+        dictUUID = fetch_dataset(comm_ids_list, temp)
         # inv_map = {v: k for k, v in dictUUID.items()
         # toHannah = []
         # for uuid in dictUUID:
@@ -81,27 +81,26 @@ def get_comm_ids(results):
 
 def fetch_dataset(comm_ids, dict_uuid_commID):
     with FetchCommunicationClientWrapper("fetch", 9090) as fc:
-        #comm_count = fc.getCommunicationCount()
-        #start_count = 0
-        #conn_comIDs = fc.getCommunicationIDs(2, 3)
-        #print(conn_comIDs)
-        print(comm_ids)
-        fetchObj = FetchRequest(communicationIds=comm_ids)
-        fr = fc.fetch(fetchObj)
-        counter = 0
-        for comm in fr.communications:
-            sentence_dict = dict()
-            for section in lun(comm.sectionList):
-                for sentence in lun(section.sentenceList):
-                    if sentence.uuid.uuidString in dict_uuid_commID.keys():
-                        print(sentence.uuid.uuidString)
-                        print(comm.text[sentence.textSpan.start:sentence.textSpan.ending])
-                        dict_uuid_commID[sentence.uuid.uuidString] = comm.text[sentence.textSpan.start:sentence.textSpan.ending]
-                    #sentence_dict[sentence.uuid.uuidString] = comm.text[sentence.textSpan.start:sentence.textSpan.ending]
-            #comm_dict[comm_ids[counter]] = sentence_dict
+        num_comms = len(comm_ids)
+        total = 0
+        while (total < num_comms):
+            if (num_comms - total >= 10):
+                fetchObj = FetchRequest(communicationIds=comm_ids[total:total+10])
+                total += 10
+            else:
+                fetchObj = FetchRequest(communicationIds=comm_ids[total:num_comms-total])
+                total += num_comms - total
+#        print("check1")
+            print(fetchObj)
+            fr = fc.fetch(fetchObj)
+            for comm in fr.communications:
+                for section in lun(comm.sectionList):
+                    for sentence in lun(section.sentenceList):
+                        if sentence.uuid.uuidString in dict_uuid_commID.keys():
+                            dict_uuid_commID[sentence.uuid.uuidString] = comm.text[sentence.textSpan.start:sentence.textSpan.ending]
 
-    print(dict_uuid_commID) #dict from uuid to sentences
-    inv_map = {v: k for k, v in dict_uuid_commID.items() #dict from sentences to uuid}
+    print(dict_uuid_commID)
+    inv_map = {v: k for k, v in dict_uuid_commID.items()}
     return dict_uuid_commID
 
 if __name__ == "__main__":
@@ -117,8 +116,11 @@ if __name__ == "__main__":
     logging.basicConfig(format='%(asctime)-15s %(levelname)s: %(message)s',
                         level='DEBUG')
     # time.sleep(10000)
+    logging.info('Starting the server...')
     while True:
         try:
+            logging.info('hi')
+            time.sleep(1)
             with SearchClientWrapper("search", "9090") as search_client:
                 # Create preprocess and train it here, need to pass to handler
                 handler = SearchHandler(search_client, "wikiQA", "", "", None)
@@ -128,5 +130,6 @@ if __name__ == "__main__":
                 logging.info('Starting the server...')
                 server.serve(args.host, args.port)
                 break
-        except:
+        except(e):
+            logging.info(e)
             pass
