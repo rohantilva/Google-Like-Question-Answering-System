@@ -38,6 +38,6 @@ class UnionIntersect:
 
     def get_percentage_run(self, data):
         vals = []
-        for pair in data():
+        for pair in data:
             vals.append(self.__get_percentage(pair[0], pair[1]))
         return np.asarray(vals)
