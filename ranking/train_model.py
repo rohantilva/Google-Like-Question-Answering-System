@@ -29,7 +29,7 @@ def subtractive_balance(x, y):
     # of all positive samples).
     num_pos = len(id_pos)
     shuffle(id_neg)
-    id_bal = np.array(id_pos + id_neg[:num_pos])
+    id_bal = np.array(id_pos + id_neg[:int(num_pos * 1.8)])
 
     # Return features (x) and labels (y) for our new, balanced subset of
     # the data.
@@ -112,12 +112,11 @@ def train_MLP(train_data, dev_data, num_resamples=5):
     det = x_train[:, 2].reshape(-1, 1)
     infinites = np.argwhere(np.isinf(det))
     for n in infinites:
-        print(n)
         det[n] = 0
     scaler.fit(det)
     s = x_train[:, 3].reshape(-1, 1)
     scaler.fit(s)
-    vec1 = scaler.transform(s).flatten()
+    vec1 = scaler.transform(det).flatten()
     vec2 = scaler.transform(s).flatten()
     x_train[:, 2] = vec1
     x_train[:, 3] = vec2
@@ -149,10 +148,12 @@ def train_MLP(train_data, dev_data, num_resamples=5):
     # x_train = x_train[:, 1].reshape(-1, 1)
     # x_dev = x_dev[:, 1].reshape(-1, 1)
     while (C <= 1e7):
-        model = MLPClassifier(solver='lbfgs', alpha=C, random_state=1)
+        model = MLPClassifier(solver='lbfgs', alpha=C, random_state=1, batch_size=400, activation='tanh')
         for sample_num in range(num_resamples):
             (x_train_boot, y_train_boot) = resample(x_train, y_train)
             model.fit(x_train_boot, y_train_boot)
+            probs = model.predict_proba(x_dev)
+            #y_dev_pred = [0 if n[1] > 0.5 else 1 for n in probs]
             y_dev_pred = model.predict(x_dev)
             f1 = f1_score(y_dev, y_dev_pred)
             if f1 > best_f1:
@@ -172,7 +173,7 @@ def train_MLP(train_data, dev_data, num_resamples=5):
 def main():
     train_data = pickle.load(open("./processed_train.p", "rb"))
     dev_data = pickle.load(open("./processed_dev.p", "rb"))
-    train_model_SVM(train_data, dev_data)
+    #train_model_SVM(train_data, dev_data)
     train_MLP(train_data, dev_data)
 
 
