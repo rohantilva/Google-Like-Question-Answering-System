@@ -1,8 +1,18 @@
+<<<<<<< HEAD
 from sklearn.metrics.pairwise import cosine_similarity
+=======
+from sklearn.metrics.pairwise import cosine_similarity as cosine
+>>>>>>> master
 import spacy
 import numpy as np
 from numpy import array
 from numpy import matrix
+<<<<<<< HEAD
+=======
+import math
+import gzip
+import re
+>>>>>>> master
 
 class WordEmbeddings:
     def __init__(self):
@@ -19,17 +29,22 @@ class WordEmbeddings:
         for term in terms2:
             if term.has_vector:
                 B.append(term.vector)
-        A = self.np.matrix(A)
-        B = self.np.matrix(B)
+        A = np.matrix(A)
+        B = np.matrix(B)
         A = A.transpose()
-        dotProd = self.np.dot(B, A)
-        dimMax = max(self.np.shape(dotProd))
-        dimMin = min(self.np.shape(dotProd))
+        dotProd = np.dot(B, A)
+        dimMax = max(np.shape(dotProd))
+        dimMin = min(np.shape(dotProd))
         detSum = 0
         for i in range(dimMax - dimMin + 1):
-            sub = dotProd[i:i + dimMin, :]
-            detSum += self.np.linalg.det(sub)
+            if dimMax == np.shape(dotProd)[0]:
+                sub = dotProd[i:i + dimMin, :]
+            else:
+                sub = dotProd[:, i:i + dimMin]
+            detSum += np.linalg.det(sub)
         detSum = detSum / (dimMax-dimMin+1)
+        if math.isnan(detSum):
+            detSum = 0
         return detSum
 
     def __getSumVal(self, query, answer):
@@ -46,11 +61,15 @@ class WordEmbeddings:
         for term in terms2:
             if term.has_vector:
                 vector2 = [term.vector[i]+vector2[i] for i in range(len(term.vector))]
-        vector1 = self.array(vector1).reshape(1, -1)
-        vector2 = self.array(vector2).reshape(1, -1)
-        return self.cosine(vector1, vector2)[0][0]
+        vector1 = array(vector1).reshape(1, -1)
+        vector2 = array(vector2).reshape(1, -1)
+        return cosine(vector1, vector2)[0][0]
 
-    
+    def __getSpacySim(self, query, answer):
+        terms1 = self.nlp(query)
+        terms2 = self.nlp(answer)
+        return terms1.similarity(terms2)
+
     def get_det_val_dataset(self, dataset):
         det_vals = []
         with gzip.open(dataset, 'rb') as f:
@@ -64,15 +83,15 @@ class WordEmbeddings:
                 a = alpha.sub(' ', str(arr[5]))
                 det_vals.append(self.__getDetVal(q, a))
         return np.asarray(det_vals)
-    
-    
+
+
     def get_det_vals_run(self, data):
         det_vals = []
-        for pair in data():
+        for pair in data:
             det_vals.append(self.__getDetVal(pair[0], pair[1]))
         return np.asarray(det_vals)
 
-    
+
     def get_sum_vals_dataset(self, dataset):
         sum_vals = []
         with gzip.open(dataset, 'rb') as f:
@@ -84,16 +103,33 @@ class WordEmbeddings:
                 alpha = re.compile('[^0-9a-zA-Z]')
                 q = alpha.sub(' ', str(arr[1]))
                 a = alpha.sub(' ', str(arr[5]))
-                sum__vals.append(self.__getSumVal(q, a))
+                sum_vals.append(self.__getSumVal(q, a))
         return np.asarray(sum_vals)
 
 
     def get_sum_vals_run(self, data):
         sum_vals = []
-        for pair in data():
+        for pair in data:
             sum_vals.append(self.__getSumVal(pair[0], pair[1]))
         return np.asarray(sum_vals)
 
-    
+    def get_spacy_sim_dataset(self, dataset):
+        sim_vals = []
+        with gzip.open(dataset, 'rb') as f:
+            next(f)
+            for line in f:
+                line = line.decode('UTF-8')
+                line = line.lower()
+                arr = line.split("\t")
+                alpha = re.compile('[^0-9a-zA-Z]')
+                q = alpha.sub(' ', str(arr[1]))
+                a = alpha.sub(' ', str(arr[5]))
+                sim_vals.append(self.__getSpacySim(q, a))
+        return np.asarray(sim_vals)
 
 
+    def get_spacy_sim_run(self, data):
+        sim_vals = []
+        for pair in data:
+            sim_vals.append(self.__getSpacySim(pair[0], pair[1]))
+        return np.asarray(det_vals)

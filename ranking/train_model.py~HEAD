@@ -7,6 +7,7 @@ import pickle
 import numpy as np
 from random import shuffle
 
+
 def subtractive_balance(x, y):
     '''
     Given feature matrix x and label vector y, return subset of x and y
@@ -68,6 +69,7 @@ def train_model_SVM(train_data, dev_data, num_resamples=5):
     print(best_r)
     print(curr_best_C)
 
+
 def train_MLP(train_data, dev_data, num_resamples=5):
     x_train = train_data['x']
     #x_train = x_train.reshape(-1, 1)
@@ -81,22 +83,15 @@ def train_MLP(train_data, dev_data, num_resamples=5):
     best_f1 = 0
     best_p = 0
     best_r = 0
-    #added
-    best_prob = None
     f1_scores = []
     while (C <= 1e7):
-        model = MLPClassifier(hidden_layer_sizes=(100, 50, 25), solver='lbfgs', alpha=C, random_state=1)
+        model = MLPClassifier(solver='lbfgs', alpha=C, random_state=1)
         for sample_num in range(num_resamples):
             (x_train_boot, y_train_boot) = resample(x_train, y_train)
             model.fit(x_train_boot, y_train_boot)
             y_dev_pred = model.predict(x_dev)
-            #added
-            y_dev_pred_prob = model.predict_proba(x_dev)
-            np.set_printoptions(threshold=np.nan)
             f1 = f1_score(y_dev, y_dev_pred)
             if f1 > best_f1:
-                #added
-                best_prob = y_dev_pred_prob 
                 best_f1 = f1
                 curr_best_C = C
                 best_p = precision_score(y_dev, y_dev_pred)
@@ -106,18 +101,16 @@ def train_MLP(train_data, dev_data, num_resamples=5):
     print(best_p)
     print(best_r)
     print(curr_best_C)
-    sorted_indices = np.argsort(best_prob[:, 1])
-    
-#    print(best_prob)
+
 
 def main():
     train_data = pickle.load(open("./processed_train.p", "rb"))
     dev_data = pickle.load(open("./processed_dev.p", "rb"))
-    #train_model_SVM(train_data, dev_data)
-    #train_model_LogisticRegression(train_data, dev_data)
+    train_model_SVM(train_data, dev_data)
     train_MLP(train_data, dev_data)
 
 
 if __name__ == '__main__':
     main()
+
 

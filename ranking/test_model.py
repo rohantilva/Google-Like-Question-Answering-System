@@ -8,9 +8,9 @@ import pickle
 import numpy as np
 from random import shuffle
 
-def pre_ranking(x_features, query_cands, uuidDict):
+def pre_ranking(x_features, model_path, query_cands, uuidDict):
     retDict = {}
-    model = pickle.load(open("model.p", "rb"))
+    model = pickle.load(open(model_path, "rb"))
     probs = model.predict_proba(x_features)
     for i in range(len(probs)):
         prob_yes = probs[i][1]
