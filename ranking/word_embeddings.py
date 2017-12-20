@@ -1,11 +1,18 @@
+<<<<<<< HEAD
+from sklearn.metrics.pairwise import cosine_similarity
+=======
 from sklearn.metrics.pairwise import cosine_similarity as cosine
+>>>>>>> master
 import spacy
 import numpy as np
 from numpy import array
 from numpy import matrix
+<<<<<<< HEAD
+=======
 import math
 import gzip
 import re
+>>>>>>> master
 
 class WordEmbeddings:
     def __init__(self):
