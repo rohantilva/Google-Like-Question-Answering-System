@@ -36,7 +36,7 @@ class QwordPreprocess:
             question = pair[0]
             question = question.lower()
             alpha = re.compile('[^0-9a-zA-Z]')
-            q = alpha.sub(' ', question))
+            q = alpha.sub(' ', question)
             index = 0
             if question[0] in self.q_words:
                 index = self.q_words.index(q[0])
