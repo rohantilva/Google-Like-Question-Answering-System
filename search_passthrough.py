@@ -149,6 +149,5 @@ if __name__ == "__main__":
                 logging.info('Starting the server...')
                 server.serve(args.host, args.port)
                 break
-        except(e):
-            logging.info(e)
+        except:
             pass
