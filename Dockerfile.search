@@ -8,7 +8,7 @@ RUN pip install -U scikit-learn
 RUN pip install -U numpy
 RUN pip install -U scipy
 RUN pip install -U spacy
-RUN python -m spacy download en
+RUN python -m spacy download en_core_web_lg
 ADD search_passthrough.py /opt/
 ADD query_int.py /opt/
 ADD /ranking/keras-train.py /opt/
