@@ -11,6 +11,11 @@ from concrete.util import AnalyticUUIDGeneratorFactory, SearchServiceWrapper, Se
 from query_int import return_search_results
 from concrete.util.access_wrapper import FetchCommunicationClientWrapper
 import collections
+import pickle
+from sklearn.neural_network import MLPClassifier
+from preprocess import Preprocess
+from test_model import pre_ranking
+from rerank import rerank
 
 class SearchHandler(SearchService.Iface):
     def __init__(self, other, corpus_name, host, port, preprocess):
@@ -49,12 +54,13 @@ class SearchHandler(SearchService.Iface):
         results = []
         for key in resultsDict:
             results.append(resultsDict[key])
+        #results = results[:5] # comment out on full run
         comm_ids_list, temp = get_comm_ids(results)
         dictUUID = fetch_dataset(comm_ids_list, temp)
-        # inv_map = {v: k for k, v in dictUUID.items()
-        # toHannah = []
-        # for uuid in dictUUID:
-            # toHannah.append([query, dictUUID[uuid]])
+        inv_map = {v: k for k, v in dictUUID.items()}
+        toHannah = []
+        for uuid in dictUUID:
+            toHannah.append([query.rawQuery, dictUUID[uuid]])
         resultItemRet = SearchResult(uuid=aug.next(),
                                      searchQuery=query,
                                      searchResultItems=results,
@@ -62,10 +68,12 @@ class SearchHandler(SearchService.Iface):
                                         tool="search",
                                         timestamp=int(time.time())),
                                      lang="eng")
-        # feature_matrix = preprocess(toHannah)
-        # dictRanks = rohanFunction(feature_matrix, resultItemRet, inv_map)
-        # results = rerank(dictUUID, results)
-        return resultItemRet
+        model = pickle.load(open("./trained_model.p", "rb"))
+        pre = Preprocess()
+        feature_matrix = pre.process_run(toHannah)
+        dictRanks = pre_ranking(feature_matrix, model, toHannah, inv_map)
+        results = rerank(dictRanks, resultItemRet)
+        return results
         # augf = AnalyticUUIDGeneratorFactory()
         # aug = augf.create()
         # with SearchClientWrapper(self.host, self.port) as sc:
@@ -80,13 +88,13 @@ def get_comm_ids(results):
     return comm_ids_list, temp
 
 def fetch_dataset(comm_ids, dict_uuid_commID):
-    with FetchCommunicationClientWrapper("fetch", 9090) as fc:
+    with FetchCommunicationClientWrapper("ec2-52-90-242-175.compute-1.amazonaws.com", 9093) as fc:
         num_comms = len(comm_ids)
         total = 0
         while (total < num_comms):
-            if (num_comms - total >= 10):
-                fetchObj = FetchRequest(communicationIds=comm_ids[total:total+10])
-                total += 10
+            if (num_comms - total >= 40):
+                fetchObj = FetchRequest(communicationIds=comm_ids[total:total+40])
+                total += 40
             else:
                 fetchObj = FetchRequest(communicationIds=comm_ids[total:num_comms-total])
                 total += num_comms - total
@@ -121,7 +129,7 @@ if __name__ == "__main__":
         try:
             logging.info('hi')
             time.sleep(1)
-            with SearchClientWrapper("search", "9090") as search_client:
+            with SearchClientWrapper("ec2-52-90-242-175.compute-1.amazonaws.com", "9091") as search_client:
                 # Create preprocess and train it here, need to pass to handler
                 handler = SearchHandler(search_client, "wikiQA", "", "", None)
                 # handler = SearchHandler(None, "wikiQA", args.search_host, args.search_port)

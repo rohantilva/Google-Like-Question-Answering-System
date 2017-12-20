@@ -1,18 +1,11 @@
-<<<<<<< HEAD
-from sklearn.metrics.pairwise import cosine_similarity
-=======
 from sklearn.metrics.pairwise import cosine_similarity as cosine
->>>>>>> master
 import spacy
 import numpy as np
 from numpy import array
 from numpy import matrix
-<<<<<<< HEAD
-=======
 import math
 import gzip
 import re
->>>>>>> master
 
 class WordEmbeddings:
     def __init__(self):
@@ -132,4 +125,4 @@ class WordEmbeddings:
         sim_vals = []
         for pair in data:
             sim_vals.append(self.__getSpacySim(pair[0], pair[1]))
-        return np.asarray(det_vals)
+        return np.asarray(sim_vals)

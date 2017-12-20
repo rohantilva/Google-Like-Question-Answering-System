@@ -4,16 +4,23 @@ FROM python:3
 RUN pip install concrete==4.13.3
 RUN pip install nltk
 RUN python -m nltk.downloader -d /usr/local/share/nltk_data all
+RUN pip install -U scikit-learn
+RUN pip install -U numpy
+RUN pip install -U scipy
+RUN pip install -U spacy
+RUN python -m spacy download en
 ADD search_passthrough.py /opt/
 ADD query_int.py /opt/
-ADD keras-train.py /opt/
-ADD preprocess.py /opt/
-ADD qword_preprocess.py /opt/
-ADD rerank.py /opt/
-ADD test_model.py /opt/
-ADD tfidf_preprocess.py /opt/
-ADD train_model.py /opt/
-ADD word_embeddings.py /opt/
+ADD /ranking/keras-train.py /opt/
+ADD /ranking/preprocess.py /opt/
+ADD /ranking/qword_preprocess.py /opt/
+ADD /ranking/rerank.py /opt/
+ADD /ranking/test_model.py /opt/
+ADD /ranking/tfidf_preprocess.py /opt/
+ADD /ranking/train_model.py /opt/
+ADD /ranking/word_embeddings.py /opt/
+ADD /ranking/trained_model.p /opt/
+ADD /ranking/union_intersect_preprocess.py /opt/
 WORKDIR /opt
 
 ENTRYPOINT ["python", "search_passthrough.py"]
