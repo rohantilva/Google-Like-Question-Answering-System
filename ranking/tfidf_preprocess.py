@@ -42,9 +42,9 @@ class TfidfPreprocess:
         distinct_words = {}
         count = 0
         for pair in data:
-            q = str(pair[0]).split()
+            q = str(pair[0])
             q = q.lower()
-            a = str(pair[1]).split()
+            a = str(pair[1])
             a = a.lower()
             alpha = re.compile('[^0-9a-zA-Z]')
             question = alpha.sub(' ', q)
@@ -120,9 +120,9 @@ class TfidfPreprocess:
         a_list = {}
         answer_count = 0
         for pair in data:
-            q = str(pair[0]).split()
+            q = str(pair[0])
             q = q.lower()
-            a = str(pair[1]).split()
+            a = str(pair[1])
             a = a.lower()
             alpha = re.compile('[^0-9a-zA-Z]')
             question = alpha.sub(' ', q)
@@ -190,8 +190,8 @@ class TfidfPreprocess:
         for pair in data:
             q_score_vec = np.zeros(len(unique))
             a_score_vec = np.zeros(len(unique))
-            question = pair[0].split()
-            answer = pair[1].split()
+            question = pair[0]
+            answer = pair[1]
             for word in question:
                 if word in unique.keys():
                     q_score_vec[unique[word]] = q_scores[word]
