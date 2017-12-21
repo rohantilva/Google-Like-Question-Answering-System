@@ -74,7 +74,7 @@ class SearchHandler(SearchService.Iface):
         dictRanks = pre_ranking(feature_matrix, model, toHannah, inv_map)
         results = rerank(dictRanks, resultItemRet)
         resultArr = results.searchResultItems
-        resultArr = sorted(resultArr, key=lambda result: result.score)
+        resultArr = sorted(resultArr, key=lambda result: result.score, reverse=True)
         for item in resultArr:
             logging.info(item.score)
         resultItemRet = SearchResult(uuid=aug.next(),
