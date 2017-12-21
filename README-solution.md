@@ -134,10 +134,12 @@ We also found that certain questions that started with specific words were more 
 As was stated earlier, we can see that "where" questions and "what" questions have a higher probability of being classified wrong by the model.
 
 ![](https://i.imgur.com/Xk1XRlj.png)
+
 In this graph, we see red bars correspond to the proportion of the question type that we got wrong on dev out of all the query/answer pairs we misclassified. In blue, we see how often these types of questions appear in the data. We disproportionately get where and what questions wrong.
 
 
 **Questions we got right (on dev):**
+
 ![](https://i.imgur.com/99JL8C1.png)
 This graph, by contrast, breaks down the classifications we get right by the question word they start with. We see that we get about proportional results for this one. This corresponds to our relatively high recall scores.
 
