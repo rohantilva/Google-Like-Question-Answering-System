@@ -134,11 +134,14 @@ We also found that certain questions that started with specific words were more 
 As was stated earlier, we can see that "where" questions and "what" questions have a higher probability of being classified wrong by the model.
 
 ![](https://i.imgur.com/Xk1XRlj.png)
+
 In this graph, we see red bars correspond to the proportion of the question type that we got wrong on dev out of all the query/answer pairs we misclassified. In blue, we see how often these types of questions appear in the data. We disproportionately get where and what questions wrong.
 
 
 **Questions we got right (on dev):**
+
 ![](https://i.imgur.com/99JL8C1.png)
+
 This graph, by contrast, breaks down the classifications we get right by the question word they start with. We see that we get about proportional results for this one. This corresponds to our relatively high recall scores.
 
 In addition, the number of positive dev instances is a lot greater than negative instances, meaning the model classified the majority of answers correctly. We observed that questions that were clearly not ambiguous (clearly only had one answer) were usually classified correctly.
@@ -149,9 +152,10 @@ In addition, the number of positive dev instances is a lot greater than negative
 F1 scores, @k scores before/after classifiers (also need checkpoint 0, 1, 2)
 
 **Baseline Success @k:**
-Run on entire WikiQA dataset
+_Run on entire WikiQA dataset_
+
 |     K   | Success    |
-| ------------- |:-------------:|
+| ------------- | ------------- |
 | 1    | 0.0 |
 | 10      | 0.06  |
 | 100 | 0.18  |
@@ -159,8 +163,9 @@ Run on entire WikiQA dataset
 
 **Query-expanded Success @k:**
 _No re-ranking model implemented, query expansion only_
+
 |     K   | Success   |
-| ------------- |:-------------:|
+|-------------|-------------|
 | 1    | .04  |
 | 10      |  .32 |
 | 100 |   .48 |
@@ -168,8 +173,9 @@ _No re-ranking model implemented, query expansion only_
 
 **Final Success @k:**
 _Both re-ranking and query expansion implemented_
+
 |     K   | Success   |
-| ------------- |:-------------:|
+|-------------|-------------|
 | 1    |   |
 | 10      |  |
 | 100 |   |
@@ -178,14 +184,14 @@ _Both re-ranking and query expansion implemented_
 
 **Checkpoint 3 F1, Precision, and Recall on Dev:**
 |     Metric  | Value   |
-| ------------- |:-------------:|
+|-------------|-------------|
 | Precision    | .08  |
 | Recall      | .55 |
 | F1 | .133  |
 
 **Final F1, Precision, and Recall:**
 |     Metric  | Dev Result | Test Result |
-| ------------- | -------| :-------------:|
+|-------------|-------|------------|
 | Precision    | .11 | .11|
 | Recall      | .54  | .3 |
 | F1 | .18 | .16 | 
