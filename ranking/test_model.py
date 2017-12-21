@@ -1,4 +1,3 @@
-# ranking and shit=
 from sklearn.svm import LinearSVC
 from sklearn.linear_model import LogisticRegression
 from sklearn.neural_network import MLPClassifier
@@ -17,3 +16,13 @@ def pre_ranking(x_features, model, query_cands, uuidDict):
         uuid = uuidDict[sentence]
         retDict[uuid] = prob_yes
     return retDict
+
+def f1_test_set(test_data, model_path):
+    model = pickle.load(open(model_path, "rb"))
+    x_test = test_data['x']
+    y_test = test_data['y']
+    y_test_pred = model.predict(x_test)
+    f1 = f1_score(y_test, y_test_pred)
+    p = precision_score(y_test, y_test_pred)
+    r = recall_score(y_test, y_test_pred)
+    print((f1, p, r))
