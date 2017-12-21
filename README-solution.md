@@ -152,7 +152,8 @@ In addition, the number of positive dev instances is a lot greater than negative
 F1 scores, @k scores before/after classifiers (also need checkpoint 0, 1, 2)
 
 **Baseline Success @k:**
-Run on entire WikiQA dataset
+_Run on entire WikiQA dataset_
+
 |     K   | Success    |
 | ------------- | ------------- |
 | 1    | 0.0 |
@@ -162,6 +163,7 @@ Run on entire WikiQA dataset
 
 **Query-expanded Success @k:**
 _No re-ranking model implemented, query expansion only_
+
 |     K   | Success   |
 |-------------|-------------|
 | 1    | .04  |
@@ -171,6 +173,7 @@ _No re-ranking model implemented, query expansion only_
 
 **Final Success @k:**
 _Both re-ranking and query expansion implemented_
+
 |     K   | Success   |
 |-------------|-------------|
 | 1    |   |
