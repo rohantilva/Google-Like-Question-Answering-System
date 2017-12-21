@@ -174,7 +174,7 @@ Run on entire WikiQA dataset
 **Final Success @k: Logistic Regression**
 _Both re-ranking and query expansion implemented. Using a **Logistic Regression model** with only the 3 features described above_
 |     K   | Success   |
-|-------------|-------------|
+| ------------- | ------------- |
 | 1    |  0.0 |
 | 10      | .01 |
 | 100 | .09  |
