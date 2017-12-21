@@ -106,35 +106,35 @@ def train_MLP(train_data, dev_data, num_resamples=5):
     #x_dev = x_dev.reshape(-1, 1)
     y_dev = dev_data['y']
 
-    scaler = MinMaxScaler()
-    det = x_train[:, 2].reshape(-1, 1)
-    infinites = np.argwhere(np.isinf(det))
-    for n in infinites:
-        det[n] = 0
-    scaler.fit(det)
-    s = x_train[:, 3].reshape(-1, 1)
-    scaler.fit(s)
-    vec1 = scaler.transform(det).flatten()
-    vec2 = scaler.transform(s).flatten()
-    x_train[:, 2] = vec1
-    x_train[:, 3] = vec2
+    #scaler = MinMaxScaler()
+    #det = x_train[:, 2].reshape(-1, 1)
+    #infinites = np.argwhere(np.isinf(det))
+    #for n in infinites:
+    #    det[n] = 0
+    #scaler.fit(det)
+    #s = x_train[:, 3].reshape(-1, 1)
+    #scaler.fit(s)
+    #vec1 = scaler.transform(det).flatten()
+    #vec2 = scaler.transform(s).flatten()
+    #x_train[:, 2] = vec1
+    #x_train[:, 3] = vec2
     y_train = train_data['y']
     (x_train, y_train) = subtractive_balance(x_train, y_train)
     x_dev = dev_data['x']
     #x_dev = x_dev.reshape(-1, 1)
     y_dev = dev_data['y']
 
-    det = x_dev[:, 2].reshape(-1, 1)
-    infinites = np.argwhere(np.isinf(det))
-    for n in infinites:
-        det[n] = 0
-    scaler.fit(det)
-    s = x_dev[:, 3].reshape(-1, 1)
-    scaler.fit(s)
-    vec1 = scaler.transform(det).flatten()
-    vec2 = scaler.transform(s).flatten()
-    x_dev[:, 2] = vec1
-    x_dev[:, 3] = vec2
+    #det = x_dev[:, 2].reshape(-1, 1)
+    #infinites = np.argwhere(np.isinf(det))
+    #for n in infinites:
+    #    det[n] = 0
+    #scaler.fit(det)
+    #s = x_dev[:, 3].reshape(-1, 1)
+    #scaler.fit(s)
+    #vec1 = scaler.transform(det).flatten()
+    #vec2 = scaler.transform(s).flatten()
+    #x_dev[:, 2] = vec1
+    #x_dev[:, 3] = vec2
 
     C = 1e-7
     curr_best_C = 0
@@ -153,6 +153,7 @@ def train_MLP(train_data, dev_data, num_resamples=5):
             y_dev_pred = model.predict(x_dev)
             y_dev_pred_prob = model.predict_proba(x_dev)
             np.set_printoptions(threshold=np.nan)
+#            print(y_dev_pred_prob)
             f1 = f1_score(y_dev, y_dev_pred)
             if f1 > best_f1:
                 best_prob = y_dev_pred_prob 
