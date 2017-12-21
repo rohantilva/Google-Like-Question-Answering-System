@@ -6,12 +6,6 @@ Final Project
 Group:
 Bryan Ki, Jordan Peykar, Rohan Tilva, Matthew Lee, and Hannah Cowley
 
-**To do list**:
-- [ ] Write in final k scores
-- [ ] Add k scores to the presentation
-- [ ] Make k-score graph (Bryan)
-
-
 ---
 # Table of Contents
 1. [Architecture](#architecture)
@@ -98,6 +92,10 @@ MLPClassifier(activation='tanh', alpha=9.999999999999999e-05,
        warm_start=False)
 ```
 
+### Ranking and Classification: Using Logistic Regression
+When evaluating success @k, we found that with our MLP we were getting really horrible results. Upon looking at our probabilities of yes versus no for individual instances, we found that our MLP was predicting either 0 or ~1 each time. Therefore, although our model had good recall (ie: all positive instances were .98 and above), many negative instances were included in there too (ie: a negative instance may be marked with probability of being positive = .9888, while a positive instance may be marked as probability = .9887). When switching to a logistic regression model (albeit, at the last minute), we found our model was predicting a more continuous distribution of probabilities. 
+We found that our preprocessing for all of the features described above was taking far too long, so this logistic regression only uses three features: cosine similarity of tfidf vectors, question words, and Jaccard Similarity (percent overlap). 
+
 ### Ranking and Classification: Using continuous predictions for ranking
 With the SVM that we used originally, we received hard predictions regarding yes/no instances. Unfortunately, this left us with no real method to rerank our answers, so we had the idea of using probabilities to rerank instead -- question/answer pair instances with higher probability of being a "YES"-instance would be ranked higher than instances with lower probabilities of being a "YES"-instance. We received these probabilities by using the MLP's `model.predict_proba(x)` function which, instead of giving yes/no predictions, gave a tuple of probabilities: one value for the probability of not answering the question, and one value for the probability of actually answering the question. 
 
@@ -134,14 +132,11 @@ We also found that certain questions that started with specific words were more 
 As was stated earlier, we can see that "where" questions and "what" questions have a higher probability of being classified wrong by the model.
 
 ![](https://i.imgur.com/Xk1XRlj.png)
-
 In this graph, we see red bars correspond to the proportion of the question type that we got wrong on dev out of all the query/answer pairs we misclassified. In blue, we see how often these types of questions appear in the data. We disproportionately get where and what questions wrong.
 
 
 **Questions we got right (on dev):**
-
 ![](https://i.imgur.com/99JL8C1.png)
-
 This graph, by contrast, breaks down the classifications we get right by the question word they start with. We see that we get about proportional results for this one. This corresponds to our relatively high recall scores.
 
 In addition, the number of positive dev instances is a lot greater than negative instances, meaning the model classified the majority of answers correctly. We observed that questions that were clearly not ambiguous (clearly only had one answer) were usually classified correctly.
@@ -149,11 +144,9 @@ In addition, the number of positive dev instances is a lot greater than negative
 
 ---
 ## Results
-F1 scores, @k scores before/after classifiers (also need checkpoint 0, 1, 2)
 
 **Baseline Success @k:**
-_Run on entire WikiQA dataset_
-
+Run on entire WikiQA dataset
 |     K   | Success    |
 | ------------- | ------------- |
 | 1    | 0.0 |
@@ -161,40 +154,51 @@ _Run on entire WikiQA dataset_
 | 100 | 0.18  |
 | 1000 | 0.30   |
 
-**Query-expanded Success @k:**
-_No re-ranking model implemented, query expansion only_
+
+**Final Success @k: Logistic Regression**
+_Both re-ranking and query expansion implemented. Using a **Logistic Regression model** with only the 3 features described above_
+|     K   | Success   |
+| ------------- | ------------- |
+| 1    |  0.0 |
+| 10      | .01 |
+| 100 | .09  |
+| 1000 | .30  |
+
+**Final Success @k: MLP**
+_Both re-ranking and query expansion implemented. Using a **MLP** with only the 3 features described above_
+
 
 |     K   | Success   |
-|-------------|-------------|
-| 1    | .04  |
-| 10      |  .32 |
-| 100 |   .48 |
-| 1000 |  .64  |
-
-**Final Success @k:**
-_Both re-ranking and query expansion implemented_
-
-|     K   | Success   |
-|-------------|-------------|
-| 1    |   |
-| 10      |  |
-| 100 |   |
-| 1000 |   |
+| ------------- | ------------- |
+| 1    |  0.00 |
+| 10      | 0.0 |
+| 100 | .04  |
+| 1000 |  .26 |
 
 
-**Checkpoint 3 F1, Precision, and Recall on Dev:**
+**Checkpoint 3 MLP F1, Precision, and Recall on Dev:**
 |     Metric  | Value   |
-|-------------|-------------|
+| ------------- | ------------- |
 | Precision    | .08  |
 | Recall      | .55 |
 | F1 | .133  |
 
-**Final F1, Precision, and Recall:**
+**Final MLP F1, Precision, and Recall:**
+_With all 6 classifier features_
 |     Metric  | Dev Result | Test Result |
-|-------------|-------|------------|
+| ------------- | -------| ------------- |
 | Precision    | .11 | .11|
 | Recall      | .54  | .3 |
 | F1 | .18 | .16 | 
+
+
+**Final Logistic Regression F1, Precision, and Recall:**
+_With only the 3 simple classifier features_
+|     Metric  | Dev Result | Test Result |
+| ------------- | -------| ------------- |
+| Precision    |.10  | .10 |
+| Recall      | .24  | .23 |
+| F1 | .14 | .14  | 
 
 **Graph of F1 Scores On Dev Over Project:**
 ![](https://i.imgur.com/nykddgW.png)
@@ -210,6 +214,8 @@ We found that F1 scores increased as the number of features implemented increase
     * More positive data
 * MLP parameter adjustment
     * Need more ML knowledge to be able to completely optimize our MLP
+* Using a classifier that provides more continuous probability results
+    * Needed more time to train our logistic regression model; we could probably make this better
 
 
 ---
