@@ -145,7 +145,8 @@ def train_MLP(train_data, dev_data, num_resamples=5):
     f1_scores = []
     best_model = MLPClassifier()
     while (C <= 1e7):
-        model = MLPClassifier(solver='lbfgs', alpha=C, random_state=1, activation='tanh')
+#        model = MLPClassifier(solver='lbfgs', alpha=C, random_state=1, activation='tanh')
+        model = LogisticRegression(C=C)
         for sample_num in range(num_resamples):
             (x_train_boot, y_train_boot) = resample(x_train, y_train)
             model.fit(x_train_boot, y_train_boot)
@@ -171,13 +172,15 @@ def train_MLP(train_data, dev_data, num_resamples=5):
     return(best_model)
 
 
+
+
 def main():
     train_data = pickle.load(open("./processed_train.p", "rb"))
     dev_data = pickle.load(open("./processed_dev.p", "rb"))
     #train_model_SVM(train_data, dev_data)
     model = train_MLP(train_data, dev_data)
-    with open("trained_model.p", "wb") as p:
-        pickle.dump(model, p)
+#    with open("trained_model.p", "wb") as p:
+#        pickle.dump(model, p)
 
 
 
