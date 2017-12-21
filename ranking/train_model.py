@@ -167,10 +167,27 @@ def train_MLP(train_data, dev_data, num_resamples=5):
     print(best_r)
     print(curr_best_C)
     print(best_model)
+    
     return(best_model)
 
 
 def main():
+    query_cands = []
+    with gzip.open("../data/WikiQA/WikiQA-dev.tsv.gz") as f:
+            next(f)
+            for line in f:
+                line = line.decode('UTF-8')
+                line = line.lower()
+                arr = line.split("\t")
+                alpha = re.compile('[^0-9a-zA-Z]')
+                qid = arr[0]
+                qids[qid] = True
+                aid = arr[4]
+                aids[aid] = True
+                pair = [str(arr[1]), str(arr[5])]
+                 query_cands.append(pair)
+    print(query_cands)
+    
     train_data = pickle.load(open("./processed_train.p", "rb"))
     dev_data = pickle.load(open("./processed_dev.p", "rb"))
     #train_model_SVM(train_data, dev_data)
