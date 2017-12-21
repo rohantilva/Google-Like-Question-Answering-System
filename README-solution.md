@@ -154,7 +154,7 @@ F1 scores, @k scores before/after classifiers (also need checkpoint 0, 1, 2)
 **Baseline Success @k:**
 Run on entire WikiQA dataset
 |     K   | Success    |
-| ------------- |:-------------:|
+|-------------|-------------|
 | 1    | 0.0 |
 | 10      | 0.06  |
 | 100 | 0.18  |
@@ -163,7 +163,7 @@ Run on entire WikiQA dataset
 **Query-expanded Success @k:**
 _No re-ranking model implemented, query expansion only_
 |     K   | Success   |
-| ------------- |:-------------:|
+|-------------|-------------|
 | 1    | .04  |
 | 10      |  .32 |
 | 100 |   .48 |
@@ -172,7 +172,7 @@ _No re-ranking model implemented, query expansion only_
 **Final Success @k:**
 _Both re-ranking and query expansion implemented_
 |     K   | Success   |
-| ------------- |:-------------:|
+|-------------|-------------|
 | 1    |   |
 | 10      |  |
 | 100 |   |
@@ -181,14 +181,14 @@ _Both re-ranking and query expansion implemented_
 
 **Checkpoint 3 F1, Precision, and Recall on Dev:**
 |     Metric  | Value   |
-| ------------- |:-------------:|
+|-------------|-------------|
 | Precision    | .08  |
 | Recall      | .55 |
 | F1 | .133  |
 
 **Final F1, Precision, and Recall:**
 |     Metric  | Dev Result | Test Result |
-| ------------- | -------| :-------------:|
+|-------------|-------|------------|
 | Precision    | .11 | .11|
 | Recall      | .54  | .3 |
 | F1 | .18 | .16 | 
