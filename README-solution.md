@@ -6,13 +6,15 @@ Final Project
 Group:
 Bryan Ki, Jordan Peykar, Rohan Tilva, Matthew Lee, and Hannah Cowley
 
+
+
 ---
 # Table of Contents
 1. [Architecture](#architecture)
 2. [How to Run](#how-to-run)
 3. [Improvements](#improvements)
     * [Query Expansion](#query-expansion)
-    * 
+    * [Stemming](#stemming)
     * [Ranking and Classification](#ranking-and-classification)
 4. [Other Things We Tried](#other-things-we-tried)
 5. [Error Analysis](#error-analysis)
