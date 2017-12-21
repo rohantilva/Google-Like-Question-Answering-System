@@ -154,7 +154,7 @@ F1 scores, @k scores before/after classifiers (also need checkpoint 0, 1, 2)
 **Baseline Success @k:**
 Run on entire WikiQA dataset
 |     K   | Success    |
-|-------------|-------------|
+| ------------- | ------------- |
 | 1    | 0.0 |
 | 10      | 0.06  |
 | 100 | 0.18  |
