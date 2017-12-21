@@ -167,7 +167,7 @@ Run on entire WikiQA dataset
 **Final Success @k: Logistic Regression**
 _Both re-ranking and query expansion implemented. Using a **Logistic Regression model** with only the 3 features described above_
 |     K   | Success   |
-| ------------- | ------------- |
+|-------------|-------------|
 | 1    |  0.0 |
 | 10      | .01 |
 | 100 | .09  |
@@ -178,7 +178,7 @@ _Both re-ranking and query expansion implemented. Using a **MLP** with only the 
 
 
 |     K   | Success   |
-| ------------- | ------------- |
+|-------------|-------------|
 | 1    |  0.00 |
 | 10      | 0.0 |
 | 100 | .04  |
@@ -187,7 +187,7 @@ _Both re-ranking and query expansion implemented. Using a **MLP** with only the 
 
 **Checkpoint 3 MLP F1, Precision, and Recall on Dev:**
 |     Metric  | Value   |
-| ------------- | ------------- |
+|-------------|-------------|
 | Precision    | .08  |
 | Recall      | .55 |
 | F1 | .133  |
@@ -195,7 +195,7 @@ _Both re-ranking and query expansion implemented. Using a **MLP** with only the 
 **Final MLP F1, Precision, and Recall:**
 _With all 6 classifier features_
 |     Metric  | Dev Result | Test Result |
-| ------------- | -------| ------------- |
+|-------------|-------|-------------|
 | Precision    | .11 | .11|
 | Recall      | .54  | .3 |
 | F1 | .18 | .16 | 
@@ -204,7 +204,7 @@ _With all 6 classifier features_
 **Final Logistic Regression F1, Precision, and Recall:**
 _With only the 3 simple classifier features_
 |     Metric  | Dev Result | Test Result |
-| ------------- | -------| ------------- |
+|-------------|-------|-------------|
 | Precision    |.10  | .10 |
 | Recall      | .24  | .23 |
 | F1 | .14 | .14  | 
