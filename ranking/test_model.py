@@ -17,8 +17,9 @@ def pre_ranking(x_features, model, query_cands, uuidDict):
         retDict[uuid] = prob_yes
     return retDict
 
-def f1_test_set(test_data, model_path):
+def f1_test_set(data, model_path):
     model = pickle.load(open(model_path, "rb"))
+    test_data = pickle.load(open(data, "rb"))
     x_test = test_data['x']
     y_test = test_data['y']
     y_test_pred = model.predict(x_test)
