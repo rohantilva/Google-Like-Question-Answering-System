@@ -68,15 +68,26 @@ We assumed the first word in the query to be an identifying word for what kind o
 For this feature we decided to measure the cosine similarity of the two sentences by summing the individual word embeddings into a vector for the query and a vector for the answer. This feature can easily calculate a similarity between 0 and one of the query words to the answer words. The big issue with this method however is that in rare cases the word embedding sum can be close for two very different sentences. Since word embeddings are of length greater than 300, this overlap is rare.
 
 #### Determinants of word embeddings
-The determinant of the word embedding vectors, which is the measure of linear independence, allowed us to evaluate the cosine similarity between all of the involved items (Boratto et al. 2016). Before, we were using cosine similarity to measure two different full sentences, but with the determinant, we were able to use this same type of metric to measure the similarity of all the word embedding vectors. This metric was essential as it allowed us to compare vectors for our word embeddings feature.
+The determinant of the word embedding vectors, which calculates the measure of linear independence, allowed us to evaluate the similarity between all of the involved items (Boratto et al. 2016). Like cosine similarity, which is used to measure just two different vectors, the determinant is able to measure the similarity of all the involved word embedding vectors rather than just two. This metric was essential as it allowed us to compare vectors for our word embeddings feature.
+
+Also, the determinant can only be computed for square matrices. The paper introduced a way to compute the determinant for non-square matrices by calculating the average of the determinants of sub-square matrices, which are made by stepping through the original matrix:
+
+![](https://i.imgur.com/EeTlU0g.png)
+
+By using the determinant on a profile (which is a matrix for vectors already evaluated) and an unknown vector (previously unevaluated), we find which elements within the vectors have shared common features, and we can make a prediction on the unknown vector.
+
 
 #### % Overlap between query and answer (Jaccard Similarity)
 As another similarity measure in addition to cosine similarity, we decided to quantify the number of words that each question/answer pair had in common. To do this, we took the intersection of the query and the answer (to find common words), and then took the union of the query and answer (to find the total number of distinct words). We then divided the number of words in the intersection by the number of words in the union. Effectively, this serves as the percentage of words in common between the query and answer. By including this as a feature, we hoped that the model would be able to better classify answers that were yes/no instances (pairs with a higher percentage for this feature would be more likely to have an answer that correctly answered the question). 
 
 #### SpaCy sentence similarity metric
 The sentence similarity metric is able to use context clues to determine similarity between sentences. For example, in the sentence "I got new Schwinn pedals", SpaCy is able to use "pedals" to determine the word "Schwinn" that is out of the vocabulary that spaCy has stored.
+
 SpaCy also uses a 4-layer CNN with individual units who have receptive fields sensitive to 4-grams on either side of the word in question to classify the unknown vocabulary word. The module uses the same word embeddings that were used in the other features to complete this task.
+
 This capability is fitting for our task because a user's query may not have identical words to the answer. Therefore, by calculating the similarity between question and answer, we are more able to understand words that may not be included in our dataset.
+
+SpaCy's similarity metric works by creating parsed documents from the sentence and tagging the words using NER. However, Spacy's NER requires training and we did not train that part of the model so in effect NER was not implemented. For the word embeddings themselves, SpaCy creates vectors trained from GloVe. Once these vectors are obtained, the similarity metric simply calculates cosine similarity between the tensors of word embeddings. However, the developers at SpaCy are a lot smarter than us, so they do this really quickly.  
 The documentation for this can be found [here](https://spacy.io/usage/vectors-similarity).
 
 ### Ranking and Classification: Using a Multi-Layer Perceptron
