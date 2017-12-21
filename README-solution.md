@@ -97,6 +97,13 @@ MLPClassifier(activation='tanh', alpha=9.999999999999999e-05,
 ### Ranking and Classification: Using Logistic Regression
 When evaluating success @k, we found that with our MLP we were getting really horrible results. Upon looking at our probabilities of yes versus no for individual instances, we found that our MLP was predicting either 0 or ~1 each time. Therefore, although our model had good recall (ie: all positive instances were .98 and above), many negative instances were included in there too (ie: a negative instance may be marked with probability of being positive = .9888, while a positive instance may be marked as probability = .9887). When switching to a logistic regression model (albeit, at the last minute), we found our model was predicting a more continuous distribution of probabilities. 
 We found that our preprocessing for all of the features described above was taking far too long, so this logistic regression only uses three features: cosine similarity of tfidf vectors, question words, and Jaccard Similarity (percent overlap). 
+Model information:
+```python
+LogisticRegression(C=100000.0, class_weight=None, dual=False,
+          fit_intercept=True, intercept_scaling=1, max_iter=100,
+          multi_class='ovr', n_jobs=1, penalty='l2', random_state=None,
+          solver='liblinear', tol=0.0001, verbose=0, warm_start=False)
+```
 
 ### Ranking and Classification: Using continuous predictions for ranking
 With the SVM that we used originally, we received hard predictions regarding yes/no instances. Unfortunately, this left us with no real method to rerank our answers, so we had the idea of using probabilities to rerank instead -- question/answer pair instances with higher probability of being a "YES"-instance would be ranked higher than instances with lower probabilities of being a "YES"-instance. We received these probabilities by using the MLP's `model.predict_proba(x)` function which, instead of giving yes/no predictions, gave a tuple of probabilities: one value for the probability of not answering the question, and one value for the probability of actually answering the question. 
@@ -150,7 +157,7 @@ In addition, the number of positive dev instances is a lot greater than negative
 **Baseline Success @k:**
 Run on entire WikiQA dataset
 |     K   | Success    |
-| ------------- | ------------- |
+|-------------|-------------|
 | 1    | 0.0 |
 | 10      | 0.06  |
 | 100 | 0.18  |
