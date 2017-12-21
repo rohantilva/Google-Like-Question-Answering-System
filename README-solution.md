@@ -141,6 +141,7 @@ In this graph, we see red bars correspond to the proportion of the question type
 **Questions we got right (on dev):**
 
 ![](https://i.imgur.com/99JL8C1.png)
+
 This graph, by contrast, breaks down the classifications we get right by the question word they start with. We see that we get about proportional results for this one. This corresponds to our relatively high recall scores.
 
 In addition, the number of positive dev instances is a lot greater than negative instances, meaning the model classified the majority of answers correctly. We observed that questions that were clearly not ambiguous (clearly only had one answer) were usually classified correctly.
