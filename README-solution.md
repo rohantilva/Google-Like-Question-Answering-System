@@ -136,11 +136,16 @@ We found that questions that necessitated a numeric answer (such as a date or nu
 
 We also found that certain questions that started with specific words were more frequently wrong than others. For example, we found questions that started with "Where" and "What" to be more frequently wrong. We determined this by printing out the misclassified dev questions, and then determining what the ratio of questions that started with a given word was to the total number of incorrect questions. We also calculated this for the whole dev dataset: number of instances which started with a given question word divided by the number of total dev instances. We then compared the proportions as is shown in the following picture. 
 
+
 ![](https://i.imgur.com/XEn00nY.png)
+
 
 As was stated earlier, we can see that "where" questions and "what" questions have a higher probability of being classified wrong by the model.
 
+
 ![](https://i.imgur.com/Xk1XRlj.png)
+
+
 In this graph, we see red bars correspond to the proportion of the question type that we got wrong on dev out of all the query/answer pairs we misclassified. In blue, we see how often these types of questions appear in the data. We disproportionately get where and what questions wrong.
 
 
