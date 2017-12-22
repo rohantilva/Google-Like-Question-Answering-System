@@ -213,6 +213,18 @@ _Both re-ranking and query expansion implemented. Using a **MLP** with only the 
 | 100 | .04  |
 | 1000 |  .26 |
 
+**Final Success @k: MLP**
+_Both re-ranking and query expansion implemented. Using a **MLP** with all 6 features described above_. This code **finally** ran, but success @10 errored out with a memory issue (it was being run on a much smaller instance). Even though we didn't have this data for our presentation, as we discussed in class, we felt it was a good idea to include it here to show that indeed, our full MLP does good things.
+
+|     K   | Success   |
+|-------------|-------------|
+| 1    |  0.00 |
+| 10      | unknown (errored out) |
+| 100 | 0.08  |
+| 1000 |  0.29 |
+
+Since these k scores are very similar to those of logistic regression, we'd expect that success @10 is between 0.00 and 0.01. These scores are better than the small MLP, probably due to more features providing a more continuous distributions of "does answer" estimations.
+
 
 **Checkpoint 3 MLP F1, Precision, and Recall on Dev:**
 
